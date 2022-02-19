@@ -22,7 +22,7 @@ import {
   ResetContainer,
   SocialCard,
   SocialLoginContainer,
-} from './Elements.styles'
+} from '../../components/Layout/Elements.styles'
 import Link from 'next/link'
 import {
   LockOutlined,
