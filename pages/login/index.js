@@ -10,9 +10,7 @@ import {
 } from 'firebase/auth'
 import app from '../../config/firebase'
 import { Button, Divider, Form, Input } from 'antd'
-import { useRouter } from 'next/router'
 import { toast } from 'react-toastify'
-import styled from 'styled-components'
 import {
   ButtonSubmit,
   InputPassword,
@@ -23,7 +21,6 @@ import {
   SocialCard,
   SocialLoginContainer,
 } from '../../components/Layout/Elements.styles'
-import Link from 'next/link'
 import {
   LockOutlined,
   MailOutlined,
@@ -31,6 +28,7 @@ import {
 } from '@ant-design/icons/lib/icons'
 import Image from 'next/image'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
+import { useRouter } from 'next/router'
 const Login = () => {
   const auth = getAuth()
   const [isNewUser, setIsNewUser] = useState(false)
@@ -51,6 +49,15 @@ const Login = () => {
   //     }
   //   })
   // }, [])
+
+  useEffect(() => {
+    if (session) {
+      router.push(router.query.from || '/')
+      toast.warning(
+        'You are already logged in ! Do sign out for another account'
+      )
+    }
+  }, [session])
 
   const handleSubmit = ({ name, email, password }) => {
     if (isNewUser) {
@@ -142,13 +149,10 @@ const Login = () => {
         }
         console.log(e.code)
       })
+      .finally(() => {
+        setLoading(false)
+      })
   }
-
-  useEffect(() => {
-    if (session) {
-      router.push(router.query.from || '/')
-    }
-  }, [session])
 
   if (loading || ld) return <LoadingSpinner />
 
@@ -312,7 +316,11 @@ const Login = () => {
           <div className='w-[100%]'>
             <Divider style={{ color: 'black' }}>Or Login With</Divider>
             <SocialLoginContainer>
-              <SocialCard onClick={() => signIn('google')}>
+              <SocialCard
+                onClick={() => {
+                  signIn('google')
+                }}
+              >
                 <Image
                   className='rounded-full bg-transparent'
                   src={'/images/google.png'}

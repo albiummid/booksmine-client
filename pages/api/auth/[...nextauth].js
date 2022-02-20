@@ -6,7 +6,8 @@ import GoogleProvider from 'next-auth/providers/google'
 import FacebookProvider from 'next-auth/providers/facebook'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import clientPromise from '../../../lib/mongodb'
-connectDB()
+import url from 'url'
+// connectDB()
 
 export default NextAuth({
   session: {
@@ -42,5 +43,11 @@ export default NextAuth({
   database: process.env.DATABASE_URL,
   pages: {
     signIn: '/login',
+  },
+  callbacks: {
+    redirect({ url: full, baseUrl }) {
+      const from = url?.parse(full, true)?.query?.from
+      return from ? from : baseUrl
+    },
   },
 })

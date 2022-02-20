@@ -1,11 +1,16 @@
-import React from 'react'
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import Navbar from '../Navbar/Navbar'
 
 export default function Layout({ children }) {
+  const router = useRouter()
+  const [isLogin, setIsLogin] = useState(
+    router.route === '/login' ? true : false
+  )
   return (
     <div className='height-screen '>
-      <div>
+      <>
         <ToastContainer
           position='top-right'
           theme='colored'
@@ -18,14 +23,19 @@ export default function Layout({ children }) {
           draggable
           pauseOnHover
         />
-      </div>
-      <>
-        <Navbar />
       </>
-      <div>{children}</div>
-      <div className='mt-auto'>
-        <p>Footer</p>
-      </div>
+      {!isLogin && (
+        <>
+          <Navbar />
+        </>
+      )}
+
+      <>{children}</>
+      {!isLogin && (
+        <>
+          <p>Footer</p>
+        </>
+      )}
     </div>
   )
 }
