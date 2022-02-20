@@ -30,10 +30,9 @@ export default function App({
   )
 }
 
-function Auth({ children, auth, roles }) {
-  const [isRun, setIsRun] = useState(auth?.roleFor ? true : false)
+function Auth({ children, auth }) {
   const [isAllowed, setIsAllowed] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { data: session, status } = useSession({
     required: true,
@@ -41,35 +40,13 @@ function Auth({ children, auth, roles }) {
       router.push(`/login?from=${router.pathname}`)
     },
   })
-
   useEffect(() => {
-    if (session?.user?.email && isRun) {
-      axios
-        .get(
-          `https://booksmine-server.herokuapp.com/api/v1/user/getUserRoleBy?email=${session?.user?.email}`
-        )
-        .then(({ data }) => {
-          const userRole = data.role
-          const index = auth?.roleFor?.findIndex((item) => item === userRole)
-          console.log(index)
-          if (index >= 0) {
-            setIsAllowed(true)
-          } else {
-            setIsAllowed(false)
-          }
-        })
-        .catch((err) => {
-          const userRole = 'user'
-          const index = auth?.roleFor?.findIndex((item) => item === userRole)
-          if (index > -1) {
-            setIsAllowed(true)
-          } else {
-            setIsAllowed(false)
-          }
-        })
-        .finally(() => setLoading(false))
+    const roleFor = auth.roleFor
+    if (session && roleFor) {
+      const role = session.user.role
+      setIsAllowed(roleFor.includes(role))
     }
-  }, [auth, session])
+  }, [session, auth])
 
   const isUser = !!session?.user && !loading
 
@@ -88,5 +65,5 @@ function Auth({ children, auth, roles }) {
       }
     }
   }
-  return <LoadingSpinner full={true} />
+  return <LoadingSpinner />
 }

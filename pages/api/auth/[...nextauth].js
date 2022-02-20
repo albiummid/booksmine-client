@@ -6,13 +6,12 @@ import GoogleProvider from 'next-auth/providers/google'
 import FacebookProvider from 'next-auth/providers/facebook'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import clientPromise from '../../../lib/mongodb'
-import url from 'url'
-// connectDB()
+import axios from 'axios'
 
 export default NextAuth({
-  session: {
-    jwt: true,
-  },
+  // session: {
+  //   jwt: true,
+  // },
   // adapter: MongoDBAdapter(clientPromise),
   // Configure one or more authentication providers
   providers: [
@@ -45,9 +44,22 @@ export default NextAuth({
     signIn: '/login',
   },
   callbacks: {
-    redirect({ url: full, baseUrl }) {
-      const from = url?.parse(full, true)?.query?.from
-      return from ? from : baseUrl
+    session: async (session) => {
+      if (!session) return
+      const email = session.session.user.email
+      try {
+        const { data } = await axios.get(
+          `https://booksmine-server.herokuapp.com/api/v1/user/getUserRoleBy?email=${email}`
+        )
+        session.session.user.role = data.role
+      } catch {
+        session.session.user.role = 'user'
+      }
+
+      const user = session.session.user
+      const expires = session.session.expires
+
+      return { user, expires }
     },
   },
 })

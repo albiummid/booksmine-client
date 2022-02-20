@@ -31,33 +31,14 @@ import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import { useRouter } from 'next/router'
 const Login = () => {
   const auth = getAuth()
+  const router = useRouter()
   const [isNewUser, setIsNewUser] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isResetPassword, setIsResetPassword] = useState(false)
   const [error, setError] = useState('')
   const [userData, setUserData] = useState(null)
   const { data: session, loading: ld } = useSession()
-  const router = useRouter()
-
-  // useEffect(() => {
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       setUserData(user)
-  //     } else {
-  //       // User is signed out
-  //       // ...
-  //     }
-  //   })
-  // }, [])
-
-  useEffect(() => {
-    if (session) {
-      router.push(router.query.from || '/')
-      toast.warning(
-        'You are already logged in ! Do sign out for another account'
-      )
-    }
-  }, [session])
+  let from = router.query.from
 
   const handleSubmit = ({ name, email, password }) => {
     if (isNewUser) {
@@ -117,17 +98,28 @@ const Login = () => {
       })
   }
   useEffect(() => {
+    if (session) {
+      toast.info('You are already logged In.Logout for another account !')
+      router.push(from || '/')
+    }
+  })
+
+  useEffect(() => {
     if (userData) {
       handleFinish()
     }
   }, [userData])
+
   const handleFinish = () => {
     const user = {
       id: userData.uid,
       name: userData.displayName,
       email: userData.email,
     }
-    signIn('credentials', { redirect: false, ...user })
+    signIn('credentials', {
+      callbackUrl: from ? from : '/',
+      ...user,
+    })
   }
 
   const handleResetPass = (email) => {
@@ -318,7 +310,9 @@ const Login = () => {
             <SocialLoginContainer>
               <SocialCard
                 onClick={() => {
-                  signIn('google')
+                  signIn('google', {
+                    callbackUrl: from ? from : '/',
+                  })
                 }}
               >
                 <Image
@@ -329,7 +323,13 @@ const Login = () => {
                   alt='fb'
                 />
               </SocialCard>
-              <SocialCard onClick={() => signIn('facebook')}>
+              <SocialCard
+                onClick={() =>
+                  signIn('facebook', {
+                    callbackUrl: from ? from : '/',
+                  })
+                }
+              >
                 <Image
                   className='rounded-full bg-transparent'
                   src={'/images/facebook.png'}
@@ -338,7 +338,13 @@ const Login = () => {
                   alt='fb'
                 />
               </SocialCard>
-              <SocialCard onClick={() => signIn('github')}>
+              <SocialCard
+                onClick={() =>
+                  signIn('github', {
+                    callbackUrl: from ? from : '/',
+                  })
+                }
+              >
                 <Image
                   className='rounded-full bg-transparent'
                   src={'/images/github.png'}
