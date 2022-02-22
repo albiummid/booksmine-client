@@ -10,6 +10,7 @@ import {
   bookSelector,
   fetchBooks,
 } from '../../redux/slices/bookSlice'
+import { fetchDepartments } from '../../redux/slices/departmentSlice'
 import LoginToggleBtn from '../Layout/LoginToggleBtn'
 
 export default function Navbar() {
@@ -18,6 +19,7 @@ export default function Navbar() {
 
   useEffect(() => {
     dispatch(fetchBooks())
+    dispatch(fetchDepartments())
   }, [dispatch])
 
   return (
@@ -32,7 +34,7 @@ export default function Navbar() {
         />
       </Link>
       <p>We got {books.length} books</p>
-      <Button onClick={() => dispatch(getBooks())}>Run get Book</Button>
+      <Button onClick={() => dispatch(fetchBooks())}>Run get Book</Button>
       <LoginToggleBtn />
     </div>
   )
