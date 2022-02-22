@@ -1,12 +1,12 @@
 import thunk from 'redux-thunk'
 import { configureStore } from '@reduxjs/toolkit'
-import bookReducer from './slices/bookSlice'
-import departmentReducer from './slices/departmentSlice'
+import bookSlice from './slices/bookSlice'
+import departmentSlice from './slices/departmentSlice'
 
 const store = configureStore({
   reducer: {
-    book: bookReducer,
-    department: departmentReducer,
+    book: bookSlice,
+    department: departmentSlice,
   },
   devTools: process.env.NODE_ENV !== 'production',
   middleware: [thunk],

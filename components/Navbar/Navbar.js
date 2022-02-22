@@ -33,8 +33,7 @@ export default function Navbar() {
           alt={'booksmines'}
         />
       </Link>
-      <p>We got {books.length} books</p>
-      <Button onClick={() => dispatch(fetchBooks())}>Run get Book</Button>
+
       <LoginToggleBtn />
     </div>
   )
