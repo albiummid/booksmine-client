@@ -1,3 +1,4 @@
+import { Affix } from 'antd'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { ToastContainer } from 'react-toastify'
@@ -25,9 +26,9 @@ export default function Layout({ children }) {
         />
       </>
       {!isLogin && (
-        <>
+        <Affix>
           <Navbar />
-        </>
+        </Affix>
       )}
 
       <>{children}</>

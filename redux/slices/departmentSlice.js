@@ -32,7 +32,7 @@ export const { getDepartments, getDepartmentsSuccess, getDepartmentsFailure } =
   departmentSlice.actions
 
 // Exporting Book_Selector =>
-export const bookSelector = (state) => state.department
+export const departmentSelector = (state) => state.department
 
 // Thunk Async function
 export function fetchDepartments() {
