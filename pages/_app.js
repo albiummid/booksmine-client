@@ -5,28 +5,31 @@ import { SessionProvider } from 'next-auth/react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner'
 import Layout from '../components/Layout/Layout'
+import { Provider } from 'react-redux'
+import store from '../redux/store'
 
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
   return (
-    <SessionProvider session={session}>
-      {Component.auth ? (
-        <Auth auth={Component.auth}>
+    <Provider store={store}>
+      <SessionProvider session={session}>
+        {Component.auth ? (
+          <Auth auth={Component.auth}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </Auth>
+        ) : (
           <Layout>
             <Component {...pageProps} />
           </Layout>
-        </Auth>
-      ) : (
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      )}
-    </SessionProvider>
+        )}
+      </SessionProvider>
+    </Provider>
   )
 }
 

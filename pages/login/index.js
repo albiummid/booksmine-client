@@ -317,7 +317,7 @@ const Login = () => {
               >
                 <Image
                   className='rounded-full bg-transparent'
-                  src={'/images/google.png'}
+                  src={'/images/icons/google.png'}
                   width={100}
                   height={100}
                   alt='fb'
@@ -332,7 +332,7 @@ const Login = () => {
               >
                 <Image
                   className='rounded-full bg-transparent'
-                  src={'/images/facebook.png'}
+                  src={'/images/icons/facebook.png'}
                   width={100}
                   height={100}
                   alt='fb'
@@ -347,7 +347,7 @@ const Login = () => {
               >
                 <Image
                   className='rounded-full bg-transparent'
-                  src={'/images/github.png'}
+                  src={'/images/icons/github.png'}
                   width={100}
                   height={100}
                   alt='fb'
