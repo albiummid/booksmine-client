@@ -6,7 +6,7 @@ const store = configureStore({
   reducer: {
     book: bookReducer,
   },
-  devTools: process.env.NODE_ENV === 'development' ? true : false,
+  devTools: process.env.NODE_ENV !== 'production',
   middleware: [thunk],
 })
 
