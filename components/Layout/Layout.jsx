@@ -6,9 +6,7 @@ import Navbar from '../Navbar/Navbar'
 
 export default function Layout({ children }) {
   const router = useRouter()
-  const [isLogin, setIsLogin] = useState(
-    router.route === '/login' ? true : false
-  )
+
   return (
     <div className='height-screen '>
       <>
@@ -25,14 +23,14 @@ export default function Layout({ children }) {
           pauseOnHover
         />
       </>
-      {!isLogin && (
+      {router.route !== '/login' && (
         <Affix>
           <Navbar />
         </Affix>
       )}
 
       <>{children}</>
-      {!isLogin && (
+      {router.route !== '/login' && (
         <>
           <p>Footer</p>
         </>

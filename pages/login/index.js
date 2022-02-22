@@ -320,7 +320,7 @@ const Login = () => {
                   src={'/images/icons/google.png'}
                   width={100}
                   height={100}
-                  alt='fb'
+                  alt='google'
                 />
               </SocialCard>
               <SocialCard
@@ -350,7 +350,7 @@ const Login = () => {
                   src={'/images/icons/github.png'}
                   width={100}
                   height={100}
-                  alt='fb'
+                  alt='github'
                 />
               </SocialCard>
             </SocialLoginContainer>
