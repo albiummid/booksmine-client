@@ -11,6 +11,7 @@ import { Provider } from 'react-redux'
 import store from '../redux/store'
 import { useDispatch } from 'react-redux'
 import { fetchUser } from '../redux/slices/userSlice'
+import { async } from '@firebase/util'
 
 export default function App({
   Component,
@@ -49,8 +50,10 @@ function Auth({ children, auth }) {
   useEffect(() => {
     const roleFor = auth.roleFor
     if (session && roleFor) {
+      setLoading(true)
       const role = session.user.role
       setIsAllowed(roleFor.includes(role))
+      setLoading(false)
     }
   }, [session, auth])
 
@@ -59,7 +62,6 @@ function Auth({ children, auth }) {
   if (isUser) {
     dispatch(fetchUser(session.user.email))
     if (!auth?.roleFor) {
-      console.log(isAllowed)
       //role not exist?
       if (isUser) {
         return children

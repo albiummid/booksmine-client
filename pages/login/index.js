@@ -60,7 +60,6 @@ const Login = () => {
         const errorCode = error.code
         const errorMessage = error.message
         toast.error(errorMessage)
-        console.log(error)
         if (error.code === 'auth/user-not-found') {
           setError('Incorrect email and user not found !')
         }

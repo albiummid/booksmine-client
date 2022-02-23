@@ -1,16 +1,15 @@
 import { Button, Dropdown, Menu, Typography } from 'antd'
 import { getAuth, signOut as logout } from 'firebase/auth'
-import { signOut } from 'next-auth/react'
+import { getSession, signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
 import app from '../../config/firebase'
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowDownOutlined, DownOutlined } from '@ant-design/icons/lib/icons'
+import { DownOutlined } from '@ant-design/icons/lib/icons'
 
 export default function LoginToggleBtn() {
-  const { data } = useSession()
+  const { data, status } = useSession()
   const router = useRouter()
   const auth = getAuth()
   let from = router.query.from || '/'
@@ -46,6 +45,7 @@ export default function LoginToggleBtn() {
       </Menu.Item>
     </Menu>
   )
+  if (status === 'loading') return null
   return (
     <div>
       {data ? (

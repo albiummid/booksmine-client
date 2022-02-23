@@ -9,6 +9,7 @@ import {
   Menu,
   Tooltip,
 } from 'antd'
+import { getSession, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -23,8 +24,9 @@ import {
 } from '../../redux/slices/departmentSlice'
 import Authorize from '../Authorize/Authorize'
 import LoginToggleBtn from '../Layout/LoginToggleBtn'
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
 
-export default function Navbar() {
+export default function Navbar(props) {
   const dispatch = useDispatch()
   const router = useRouter()
   const [searchKey, setSearchKey] = useState('')

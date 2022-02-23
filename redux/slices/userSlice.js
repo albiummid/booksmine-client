@@ -46,7 +46,6 @@ export function fetchUser(email) {
       dispatch(getUserSettings(data.user.userSettings))
       dispatch(getUserSuccess(data.user))
     } catch (err) {
-      console.log(err)
       dispatch(getUserFailure(err))
     }
   }
