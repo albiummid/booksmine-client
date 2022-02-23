@@ -2,7 +2,7 @@ import { Affix } from 'antd'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { ToastContainer } from 'react-toastify'
-import Footer from '../Footer/footer'
+import Footer from '../Footer/Footer'
 import Navbar from '../Navbar/Navbar'
 
 export default function Layout({ children }) {
