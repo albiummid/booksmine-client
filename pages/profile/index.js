@@ -6,6 +6,7 @@ import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import { fetchUser, userSelector } from '../../redux/slices/userSlice'
 import { Button } from 'antd'
 import { useRouter } from 'next/router'
+import { toast } from 'react-toastify'
 
 export default function Profile() {
   const { data } = useSession()
@@ -35,7 +36,12 @@ export default function Profile() {
             <b>Email:</b> {user.email}
           </p>
         </div>
-        <Button className='bg-orange-400 text-gray-100 rounded-lg border-orange-400 '>
+        <Button
+          onClick={() => {
+            toast.info('This feature coming soon...')
+          }}
+          className='bg-orange-400 text-gray-100 rounded-lg border-orange-400 '
+        >
           Update Data
         </Button>
       </div>
