@@ -2,13 +2,14 @@ import { Affix } from 'antd'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { ToastContainer } from 'react-toastify'
+import Footer from '../Footer/footer'
 import Navbar from '../Navbar/Navbar'
 
 export default function Layout({ children }) {
   const router = useRouter()
 
   return (
-    <div className='height-screen '>
+    <div className='height-screen  '>
       <>
         <ToastContainer
           position='top-right'
@@ -29,10 +30,10 @@ export default function Layout({ children }) {
         </Affix>
       )}
 
-      <>{children}</>
+      <div className=' min-h-screen '>{children}</div>
       {router.route !== '/login' && (
         <>
-          <p>Footer</p>
+          <Footer />
         </>
       )}
     </div>

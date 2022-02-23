@@ -41,7 +41,7 @@ export function fetchBooks() {
       const { data } = await API.get('/book/all')
       dispatch(getBooksSuccess(data.books))
     } catch (err) {
-      dispatch(getBooksFailure(err.data.msg))
+      dispatch(getBooksFailure(err))
     }
   }
 }

@@ -41,7 +41,7 @@ export default function LoginToggleBtn() {
                 </Link>
             </Menu.Item> */}
 
-      <Menu.Item onClick={handleLogout} danger>
+      <Menu.Item key={6} onClick={handleLogout} danger>
         Logout
       </Menu.Item>
     </Menu>
@@ -63,11 +63,9 @@ export default function LoginToggleBtn() {
           </div>
         </Dropdown>
       ) : (
-        <Button style={{ borderRadius: '10px' }}>
-          <Link className='text-white text-ellipse' href={'/login'}>
-            Log In
-          </Link>
-        </Button>
+        <Link className='text-white text-ellipse' href={'/login'} passHref>
+          <Button style={{ borderRadius: '10px' }}>Log In</Button>
+        </Link>
       )}
     </div>
   )

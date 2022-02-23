@@ -42,7 +42,7 @@ export function fetchDepartments() {
       const { data } = await API.get('/department/all')
       dispatch(getDepartmentsSuccess(data.departments))
     } catch (err) {
-      dispatch(getDepartmentsFailure(err.data.msg))
+      dispatch(getDepartmentsFailure(err))
     }
   }
 }

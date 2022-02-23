@@ -1,7 +1,10 @@
+import { useRouter } from 'next/router'
 import React from 'react'
 
-function cart() {
+function Cart() {
+  const router = useRouter()
+  console.log(router)
   return <div>cart</div>
 }
 
-export default cart
+export default Cart

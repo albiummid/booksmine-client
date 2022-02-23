@@ -9,6 +9,8 @@ import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner'
 import Layout from '../components/Layout/Layout'
 import { Provider } from 'react-redux'
 import store from '../redux/store'
+import { useDispatch } from 'react-redux'
+import { fetchUser } from '../redux/slices/userSlice'
 
 export default function App({
   Component,
@@ -37,6 +39,7 @@ function Auth({ children, auth }) {
   const [isAllowed, setIsAllowed] = useState(false)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const dispatch = useDispatch()
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
@@ -54,6 +57,7 @@ function Auth({ children, auth }) {
   const isUser = !!session?.user && !loading
 
   if (isUser) {
+    dispatch(fetchUser(session.user.email))
     if (!auth?.roleFor) {
       console.log(isAllowed)
       //role not exist?

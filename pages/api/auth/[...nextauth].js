@@ -7,6 +7,7 @@ import FacebookProvider from 'next-auth/providers/facebook'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import clientPromise from '../../../lib/mongodb'
 import axios from 'axios'
+import { API } from '../../../API/API'
 
 export default NextAuth({
   // session: {
@@ -46,13 +47,15 @@ export default NextAuth({
   callbacks: {
     session: async (session) => {
       if (!session) return
-      const email = session.session.user.email
+      const { email, name, image } = session.session.user
       try {
-        const { data } = await axios.get(
-          `https://booksmine-server.herokuapp.com/api/v1/user/getUserRoleBy?email=${email}`
-        )
-        session.session.user.role = data.role
-      } catch {
+        const { data } = await API.post('/user/checkAndCreateUser', {
+          email,
+          name,
+          image,
+        })
+        session.session.user.role = data.user.role
+      } catch (err) {
         session.session.user.role = 'user'
       }
 
