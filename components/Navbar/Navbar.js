@@ -1,5 +1,5 @@
-import { SettingOutlined, SettingTwoTone } from '@ant-design/icons/lib/icons'
-import { async } from '@firebase/util'
+/* eslint-disable @next/next/no-img-element */
+import { SettingOutlined } from '@ant-design/icons/lib/icons'
 import {
   AutoComplete,
   Badge,
@@ -9,26 +9,24 @@ import {
   Menu,
   Tooltip,
 } from 'antd'
-import { getSession, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { bookSelector, fetchBooks } from '../../redux/slices/bookSlice'
 import {
-  fetchDepartments,
   departmentSelector,
+  fetchDepartments,
 } from '../../redux/slices/departmentSlice'
-import Authorize from '../Authorize/Authorize'
+import Authorize from '../../utils/Authorize'
 import LoginToggleBtn from '../Layout/LoginToggleBtn'
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
 
 export default function Navbar(props) {
   const dispatch = useDispatch()
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
   const [searchKey, setSearchKey] = useState('')
   const [searchData, setSearchData] = useState([])
   const {
@@ -44,14 +42,17 @@ export default function Navbar(props) {
   }, [dispatch])
 
   useEffect(() => {
+    setLoading(true)
     if (searchKey.length >= 3) {
       const filteredData = books?.filter((d) =>
         d.title.toLowerCase().includes(searchKey?.toLowerCase())
       )
       setSearchData(filteredData)
+      setLoading(false)
     }
     if (searchKey.length === 0) {
       setSearchData([])
+      setLoading(false)
     }
   }, [searchKey, books])
 
@@ -130,71 +131,69 @@ export default function Navbar(props) {
   )
 
   return (
-    <nav className='flex px-3 py-3 items-center justify-evenly  flex-wrap lg:justify-between bg-gray-50'>
-      <>
-        <Link href={'/'} passHref>
-          <Image
-            className='cursor-pointer '
-            src={'/images/booksmines.png'}
-            width={200}
-            height={50}
-            alt={'booksmines'}
-          />
-        </Link>
-      </>
-      <div className='action_container flex items-center gap-4 md:order-3 cursor-pointer '>
-        <Authorize roleFor={['admin', 'developer', 'editor']}>
-          <Link href={'/dashboard'} passHref>
-            <Tooltip title={'Dashboard'}>
-              <SettingOutlined style={{ fontSize: '22px' }} />
+    <div className='md:container'>
+      <nav className='flex px-1 py-2 gap-1 place-items-center flex-wrap space-x-5 justify-between bg-slate-50 md:justify-evenly'>
+        <>
+          <Link href={'/'} passHref>
+            <img
+              className='cursor-pointer w-[150px] md:w-[200px] '
+              src={'/images/booksmines.png'}
+              alt={'booksmines'}
+            />
+          </Link>
+        </>
+        <div className='action_container flex place-items-center gap-2 xl:order-3 md:gap-4 cursor-pointer '>
+          <Authorize roleFor={['admin', 'developer', 'editor']}>
+            <Link href={'/dashboard'} passHref>
+              <Tooltip title={'Dashboard'}>
+                <SettingOutlined className='text-xl mt-2 md:text-2xl hidden md:block' />
+              </Tooltip>
+            </Link>
+          </Authorize>
+          <Link href={'/profile/cart'} passHref>
+            <Tooltip title={'Cart'}>
+              <Badge count={5} showZero={false}>
+                <img
+                  className='hover:opacity-60 w-5 md:w-6'
+                  src={'/images/icons/shopping-bag.svg'}
+                  alt={'shopingBag'}
+                />
+              </Badge>
             </Tooltip>
           </Link>
-        </Authorize>
-        <Link href={'/profile/cart'} passHref>
-          <Tooltip title={'Cart'}>
-            <Badge count={5} showZero={false}>
-              <Image
-                className='hover:opacity-60'
-                src={'/images/icons/shopping-bag.svg'}
-                alt={'shopingBag'}
-                height={30}
-                width={25}
-              />
-            </Badge>
-          </Tooltip>
-        </Link>
-        <LoginToggleBtn />
-      </div>
+          <LoginToggleBtn />
+        </div>
 
-      <div className='search flex gap-3  '>
-        <Dropdown
-          loading={dLD}
-          disabled={dLD}
-          overlay={category}
-          placement='bottomLeft'
-          arrow
-        >
-          <Button size='large'>Categories</Button>
-        </Dropdown>
-        <AutoComplete
-          dropdownClassName='certain-category-search-dropdown'
-          dropdownMatchSelectWidth={500}
-          style={{ width: '100%', textAlign: 'center' }}
-          options={searchData?.map((d) => renderItem(d))}
-        >
-          <Input.Search
-            onSearch={(value) =>
-              value.length > 0 && router.push(`${'/search/' + value}`)
-            }
-            allowClear
-            style={{ textAlign: 'center' }}
-            onChange={(e) => setSearchKey(e.target.value)}
-            size='large'
-            placeholder='Write a books title or author name..'
-            required={true}
-          />
-        </AutoComplete>
-      </div>
-    </nav>
+        <div className='search flex gap-1 w-[100%] md:w-[60%] '>
+          <Dropdown
+            loading={dLD}
+            disabled={dLD}
+            overlay={category}
+            placement='bottomLeft'
+            arrow
+          >
+            <Button size='medium'>Categories</Button>
+          </Dropdown>
+          <AutoComplete
+            dropdownClassName='certain-category-search-dropdown'
+            dropdownMatchSelectWidth={500}
+            style={{ width: '100%', textAlign: 'center' }}
+            options={searchData?.map((d) => renderItem(d))}
+          >
+            <Input.Search
+              onSearch={(value) =>
+                value.length > 0 && router.push(`${'/search/' + value}`)
+              }
+              allowClear
+              style={{ textAlign: 'center', width: '90%' }}
+              onChange={(e) => setSearchKey(e.target.value)}
+              size='medium'
+              placeholder='Write a books title or author name..'
+              required={true}
+            />
+          </AutoComplete>
+        </div>
+      </nav>
+    </div>
   )
 }

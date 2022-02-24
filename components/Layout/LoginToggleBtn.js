@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Button, Dropdown, Menu, Typography } from 'antd'
 import { getAuth, signOut as logout } from 'firebase/auth'
 import { getSession, signOut, useSession } from 'next-auth/react'
@@ -50,20 +51,18 @@ export default function LoginToggleBtn() {
     <div>
       {data ? (
         <Dropdown overlay={menuItems}>
-          <div className='flex justify-center items-center gap-2 border-dotted border-gray-200 px-2 py-1 rounded'>
-            <Image
-              className='rounded-full'
+          <div className='flex justify-center items-center gap-1 border-dotted border-gray-200 px-1.5 py-1 rounded'>
+            <img
+              className='rounded-full w-5 md:w-8'
               src={data.user.image}
-              height={30}
-              width={30}
               alt={data.user.name}
             />
-            <Typography>{data.user.name}</Typography>
+            <p className='text-[10px] md:text-sm'>{data.user.name}</p>
             <DownOutlined />
           </div>
         </Dropdown>
       ) : (
-        <Link className='text-white text-ellipse' href={'/login'} passHref>
+        <Link className=' text-white text-ellipse' href={'/login'} passHref>
           <Button style={{ borderRadius: '10px' }}>Log In</Button>
         </Link>
       )}

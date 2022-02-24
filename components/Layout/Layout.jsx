@@ -1,7 +1,7 @@
 import { Affix } from 'antd'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React from 'react'
 import { ToastContainer } from 'react-toastify'
 import Footer from '../Footer/Footer'
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
@@ -13,7 +13,7 @@ export default function Layout({ children }) {
   if (status === 'loading') return <LoadingSpinner />
 
   return (
-    <div className='height-screen  '>
+    <div className='md:container'>
       <>
         <ToastContainer
           position='top-right'
@@ -34,7 +34,7 @@ export default function Layout({ children }) {
         </Affix>
       )}
 
-      <div className=' min-h-screen '>{children}</div>
+      <>{children}</>
       {router.route !== '/login' && (
         <>
           <Footer />
