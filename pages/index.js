@@ -18,7 +18,11 @@ function Home() {
         {books.length &&
           books.slice(0, 20).map((book) =>
             book.discount > 0 ? (
-              <Badge.Ribbon color={'volcano'} text={`${book.discount}% off !`}>
+              <Badge.Ribbon
+                color={'volcano'}
+                key={book._id}
+                text={`${book.discount}% off !`}
+              >
                 <BookCard book={book} key={book._id} />
               </Badge.Ribbon>
             ) : (
