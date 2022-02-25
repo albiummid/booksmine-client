@@ -16,6 +16,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { bookSelector, fetchBooks } from '../../redux/slices/bookSlice'
+import { cartSelector } from '../../redux/slices/cartSlice'
 import {
   departmentSelector,
   fetchDepartments,
@@ -35,6 +36,7 @@ export default function Navbar(props) {
     error: bookERR,
   } = useSelector(departmentSelector)
   const { books, loading: dLD, error: dERR } = useSelector(bookSelector)
+  const { cart } = useSelector(cartSelector)
 
   useEffect(() => {
     dispatch(fetchBooks())
@@ -152,7 +154,7 @@ export default function Navbar(props) {
           </Authorize>
           <Link href={'/profile/cart'} passHref>
             <Tooltip title={'Cart'}>
-              <Badge count={5} showZero={false}>
+              <Badge count={cart.length} showZero={false}>
                 <img
                   className='hover:opacity-60 w-5 md:w-6'
                   src={'/images/icons/shopping-bag.svg'}

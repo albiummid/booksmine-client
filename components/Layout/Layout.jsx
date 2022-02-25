@@ -18,7 +18,7 @@ export default function Layout({ children }) {
         <ToastContainer
           position='top-right'
           theme='colored'
-          autoClose={5000}
+          autoClose={1500}
           hideProgressBar={false}
           newestOnTop
           closeOnClick

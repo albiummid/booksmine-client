@@ -1,12 +1,12 @@
+import { Button } from 'antd'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import React, { useEffect } from 'react'
-import { useSession } from 'next-auth/react'
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import { jsonData } from '../../components/jsonData'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import { fetchUser, userSelector } from '../../redux/slices/userSlice'
-import { Button } from 'antd'
-import { useRouter } from 'next/router'
-import { toast } from 'react-toastify'
 
 export default function Profile() {
   const { data } = useSession()
@@ -15,6 +15,50 @@ export default function Profile() {
   useEffect(() => {
     dispatch(fetchUser(data.user.email))
   }, [data, dispatch])
+  const newData = jsonData.map((item) => {
+    const {
+      _id,
+      title,
+      author,
+      imgUrl,
+      originalPrice,
+      price,
+      discount,
+      isStock,
+      inStock,
+      category,
+      department,
+      semester,
+      courseCode,
+      reviews,
+      ratings,
+      createdAt,
+      updatedAt,
+      __v,
+    } = item
+    const update = {
+      _id,
+      title,
+      author,
+      imgUrl,
+      originalPrice,
+      price,
+      discount,
+      isStock,
+      inStock,
+      category,
+      department,
+      semester,
+      courseCode,
+      reviews,
+      ratings,
+      createdAt,
+      updatedAt,
+      __v,
+    }
+    return update
+  })
+  console.log(newData)
 
   if (loading) return <LoadingSpinner />
   return (

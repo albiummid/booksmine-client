@@ -6,9 +6,11 @@ import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React from 'react'
+import app from '../../config/firebase'
 import Authorize from '../../utils/Authorize'
 
 export default function LoginToggleBtn() {
+  const initApp = app
   const { data, status } = useSession()
   const router = useRouter()
   const auth = getAuth()
@@ -29,21 +31,15 @@ export default function LoginToggleBtn() {
         <Link href='/profile/'>My Profile</Link>
       </Menu.Item>
       <Menu.Item key={2}>
-        <Link href='/profile/orders'>Order List</Link>
-      </Menu.Item>
-      <Menu.Item key={3}>
         <Link href='/profile/cart'>Cart Items</Link>
       </Menu.Item>
-      {/* <Menu.Item key="3">
-                <Link to='/dashboard/whiteList'>
-                    My White List
-                </Link>
-            </Menu.Item>
-            <Menu.Item key="4">
-                <Link to='/dashboard/review'>
-                    My Ratings and Review
-                </Link>
-            </Menu.Item> */}
+      <Menu.Item key={3}>
+        <Link href='/profile/orders'>Order List</Link>
+      </Menu.Item>
+
+      <Menu.Item key={4}>
+        <Link href={'/profile/favorite'}>Favorite Books</Link>
+      </Menu.Item>
 
       <Menu.Item key={6} onClick={handleLogout} danger>
         Logout
