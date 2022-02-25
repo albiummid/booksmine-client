@@ -1,18 +1,14 @@
-import NextAuth from 'next-auth'
-import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
-import GithubProvider from 'next-auth/providers/github'
-import connectDB from '../../../config/connectDB'
-import GoogleProvider from 'next-auth/providers/google'
-import FacebookProvider from 'next-auth/providers/facebook'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import clientPromise from '../../../lib/mongodb'
 import axios from 'axios'
-import { API } from '../../../API/API'
+import NextAuth from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import FacebookProvider from 'next-auth/providers/facebook'
+import GithubProvider from 'next-auth/providers/github'
+import GoogleProvider from 'next-auth/providers/google'
 
 export default NextAuth({
-  // session: {
-  //   jwt: true,
-  // },
+  session: {
+    jwt: true,
+  },
   // adapter: MongoDBAdapter(clientPromise),
   // Configure one or more authentication providers
   providers: [
@@ -49,13 +45,15 @@ export default NextAuth({
       if (!session) return
       const { email, name, image } = session.session.user
       try {
-        const { data } = await API.post('/user/checkAndCreateUser', {
+        const base = 'https://booksmine-server.herokuapp.com/api/v1'
+        const { data } = await axios.post(base + '/user/checkAndCreateUser', {
           email,
           name,
           image,
         })
         session.session.user.role = data.user.role
       } catch (err) {
+        console.log(err)
         session.session.user.role = 'user'
       }
 

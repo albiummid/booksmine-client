@@ -1,8 +1,17 @@
 import axios from 'axios'
 
-const baseURL = 'https://booksmine-server.herokuapp.com/api/v1/'
-// const baseURL = 'http://localhost:8080/api/v1'
+let API
 
-export const API = axios.create({
-  baseURL,
-})
+if (typeof window !== 'undefined') {
+  let localURL = JSON.parse(window.localStorage.getItem('userSettings'))?.base
+
+  let baseURL = localURL || 'https://booksmine-server.herokuapp.com/api/v1/'
+  console.log('currentBase: ', baseURL)
+  // const baseURL = 'http://localhost:8080/api/v1'
+
+  API = axios.create({
+    baseURL,
+  })
+}
+
+export default API

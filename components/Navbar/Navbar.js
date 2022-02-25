@@ -131,7 +131,7 @@ export default function Navbar(props) {
   )
 
   return (
-    <div className='md:container'>
+    <div className=''>
       <nav className='flex px-1 py-2 gap-1 place-items-center flex-wrap space-x-5 justify-between bg-slate-50 md:justify-evenly'>
         <>
           <Link href={'/'} passHref>
@@ -146,7 +146,7 @@ export default function Navbar(props) {
           <Authorize roleFor={['admin', 'developer', 'editor']}>
             <Link href={'/dashboard'} passHref>
               <Tooltip title={'Dashboard'}>
-                <SettingOutlined className='text-xl mt-2 md:text-2xl hidden md:block' />
+                <SettingOutlined className='text-xl mt-2 md:text-2xl hidden sm:block' />
               </Tooltip>
             </Link>
           </Authorize>

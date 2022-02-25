@@ -1,13 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-import { Button, Dropdown, Menu, Typography } from 'antd'
-import { getAuth, signOut as logout } from 'firebase/auth'
-import { getSession, signOut, useSession } from 'next-auth/react'
-import { useRouter } from 'next/router'
-import app from '../../config/firebase'
-import React from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
 import { DownOutlined } from '@ant-design/icons/lib/icons'
+import { Button, Dropdown, Menu } from 'antd'
+import { getAuth, signOut as logout } from 'firebase/auth'
+import { signOut, useSession } from 'next-auth/react'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React from 'react'
+import Authorize from '../../utils/Authorize'
 
 export default function LoginToggleBtn() {
   const { data, status } = useSession()
@@ -21,13 +20,18 @@ export default function LoginToggleBtn() {
 
   const menuItems = (
     <Menu>
-      <Menu.Item key='1'>
+      <Authorize roleFor={['admin', 'editor', 'developer']}>
+        <Menu.Item key={0}>
+          <Link href={'/dashboard'}>Dashboard</Link>
+        </Menu.Item>
+      </Authorize>
+      <Menu.Item key={1}>
         <Link href='/profile/'>My Profile</Link>
       </Menu.Item>
-      <Menu.Item key='2'>
+      <Menu.Item key={2}>
         <Link href='/profile/orders'>Order List</Link>
       </Menu.Item>
-      <Menu.Item key='3'>
+      <Menu.Item key={3}>
         <Link href='/profile/cart'>Cart Items</Link>
       </Menu.Item>
       {/* <Menu.Item key="3">

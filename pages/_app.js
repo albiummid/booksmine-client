@@ -1,17 +1,14 @@
-import '../styles/globals.css'
 import 'antd/dist/antd.css'
-import 'react-toastify/dist/ReactToastify.css'
-import { SessionProvider } from 'next-auth/react'
-import { useSession } from 'next-auth/react'
+import { SessionProvider, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner'
+import { Provider, useDispatch } from 'react-redux'
+import 'react-toastify/dist/ReactToastify.css'
 import Layout from '../components/Layout/Layout'
-import { Provider } from 'react-redux'
-import store from '../redux/store'
-import { useDispatch } from 'react-redux'
+import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner'
 import { fetchUser } from '../redux/slices/userSlice'
-import { async } from '@firebase/util'
+import store from '../redux/store'
+import '../styles/globals.css'
 
 export default function App({
   Component,
