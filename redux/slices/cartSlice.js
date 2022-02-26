@@ -5,11 +5,12 @@ const initialState = {
   cart: [],
   loading: false,
   error: null,
+  liteCart: [],
   cartData: {
-    subTotalPrice: null,
-    subTotalOriginalPrice: null,
+    subTotalBill: null,
+    subTotalOriginalBill: null,
     deliveryCharge: null,
-    totalPrice: null,
+    totalBill: null,
   },
 }
 
@@ -64,14 +65,30 @@ const cartSlice = createSlice({
         subTotal += item.price * item.quantity
         subTotalOriginal += item.originalPrice * item.quantity
       }
+      const liteCart = state.cart.map((item) => {
+        const data = {
+          _id: item._id,
+          title: item.title,
+          author: item.author,
+          quantity: item.quantity,
+          price: item.price,
+        }
+        return data
+      })
+      state.liteCart = liteCart
       const deliveryCharge = subTotal > 1000 ? 0 : 110
       const total = subTotal + deliveryCharge
       state.cartData = {
-        subTotalPrice: subTotal,
-        totalPrice: total,
+        subTotalBill: subTotal,
+        totalBill: total,
         deliveryCharge: deliveryCharge,
-        subTotalOriginalPrice: subTotalOriginal,
+        subTotalOriginalBill: subTotalOriginal,
       }
+    },
+    clearCart: (state) => {
+      state.cart = []
+      state.liteCart = []
+      state.cartData = {}
     },
   },
 })
@@ -85,6 +102,7 @@ export const {
   quantityIncrement,
   quantityDecrement,
   getCartData,
+  clearCart,
 } = cartSlice.actions
 
 export const cartSelector = (state) => state.cart

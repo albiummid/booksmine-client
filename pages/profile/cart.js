@@ -1,27 +1,56 @@
 import { Button, Divider, Form, Input, Steps } from 'antd'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import API from '../../API/API'
 import CartCard from '../../components/CartCard/CartCard'
-import { cartSelector, getCartData } from '../../redux/slices/cartSlice'
+import {
+  cartSelector,
+  clearCart,
+  getCartData,
+} from '../../redux/slices/cartSlice'
 
 function Cart() {
   const dispatch = useDispatch()
   const router = useRouter()
   const [activeStep, setActiveStep] = useState(0)
-  const { cart, cartData } = useSelector(cartSelector)
+  const { cart, cartData, liteCart } = useSelector(cartSelector)
+  const [form] = Form.useForm()
+  const { data } = useSession()
 
   useEffect(() => {
     dispatch(getCartData())
   }, [cart])
 
-  const handleOrder = (values) => {
-    console.log(values)
+  const handleOrder = async ({ trxId, phone }) => {
+    const { name, email } = data.user
+    const orderObj = {
+      trxId,
+      status: 'pending',
+      totalBill: cartData.totalBill,
+      user: {
+        name,
+        email,
+        phone,
+      },
+      orders: liteCart,
+    }
+    try {
+      const { data } = await API.post('/order/add', orderObj)
+      toast.success('Order Completed!')
+      dispatch(clearCart())
+      form.resetFields()
+    } catch (err) {
+      toast.error('failed to create order !')
+      console.log(err)
+    }
   }
 
   return (
-    <div className=''>
-      <div className='mx-auto max-w-[600px] px-4'>
+    <div className='flex flex-col'>
+      <div className='mx-auto w-full md:max-w-[600px] px-4'>
         <Steps
           size='small'
           responsive={false}
@@ -37,13 +66,13 @@ function Cart() {
         </Steps>
       </div>
       {!activeStep ? (
-        <>
-          <div className='shadow-md shadow-gray-200 ring-1 my-2 w-[400px] p-2 mx-auto'>
+        <div className='mx-auto'>
+          <div className='shadow-md shadow-gray-200 ring-1 my-2 min-w-[350px] max-w-[400px] p-2 '>
             <p>Carted Items: {cart.length}</p>
-            <p>Total Price:{cartData.subTotalPrice} Tk.</p>
+            <p>Total Price:{cartData.subTotalBill} Tk.</p>
             <p className='text-center text-green-500'>
               You are saving{' '}
-              {cartData.subTotalOriginalPrice - cartData.subTotalPrice} Tk.
+              {cartData.subTotalOriginalBill - cartData.subTotalBill} Tk.
             </p>
           </div>
           <div>
@@ -56,7 +85,7 @@ function Cart() {
               Proceed to Checkout
             </Button>
           </div>
-        </>
+        </div>
       ) : (
         <div className='mx-auto max-w-[500px] my-10 rounded-xl shadow-xl py-5 md:px-8 px-2  ring-1'>
           <div>
@@ -72,9 +101,9 @@ function Cart() {
                   </p>
 
                   <p className='text-xs md:text-sm'>
-                    {item.price} x {item.quantity} ={' '}
-                    {item.price * item.quantity} Tk.
+                    {item.price} x {item.quantity} =
                   </p>
+                  <p> {item.price * item.quantity} Tk.</p>
                 </div>
               ))}
             </div>
@@ -82,7 +111,7 @@ function Cart() {
 
             <div className='flex justify-between text-xs md:text-sm'>
               <p className='font-bold'>SubTotal:</p>
-              <p>{cartData.subTotalPrice} Tk.</p>
+              <p>{cartData.subTotalBill} Tk.</p>
             </div>
             <div className=' flex justify-between border-b-2 text-xs md:text-sm'>
               <p className='font-bold'>Delivery Charge:</p>
@@ -90,7 +119,7 @@ function Cart() {
             </div>
             <div className='flex justify-between text-xs md:text-sm '>
               <p className='font-bold'>Total Bill:</p>
-              <p>{cartData.totalPrice} Tk.</p>
+              <p>{cartData.totalBill} Tk.</p>
             </div>
 
             <span className='text-orange-400 text-center'>
@@ -98,23 +127,33 @@ function Cart() {
             </span>
             <Divider>Order Procedure</Divider>
             <p className='text-xs md:text-sm'>
-              First of all make send money {cartData.totalPrice} Tk. to{' '}
+              First of all make send money {cartData.totalBill} Tk. to{' '}
               <tel>01755977522</tel> . And give us your phone number and TrxID
               of send money. After verifing your payment ,we will process your
               order.
             </p>
             <Divider>Fill Up The Form</Divider>
-            <Form onFinish={handleOrder}>
+            <Form form={form} onFinish={handleOrder}>
               <div className='flex justify-between m-0 gap-1 px-2'>
                 <div className='m-0'>
                   <b>Phone:</b>
-                  <Form.Item name={'phone'}>
+                  <Form.Item
+                    name={'phone'}
+                    rules={[
+                      { required: true, message: 'Phone number is required' },
+                    ]}
+                  >
                     <Input />
                   </Form.Item>
                 </div>
                 <div>
                   <b>TransactionID :</b>
-                  <Form.Item name={'trxId'}>
+                  <Form.Item
+                    rules={[
+                      { required: true, message: 'Transaction Id is required' },
+                    ]}
+                    name={'trxId'}
+                  >
                     <Input className='' />
                   </Form.Item>
                 </div>

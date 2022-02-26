@@ -1,5 +1,9 @@
 import axios from 'axios'
 
+export const local = axios.create({
+  baseURL: 'http://localhost:8080/api/v1',
+})
+
 let API
 
 if (typeof window !== 'undefined') {
