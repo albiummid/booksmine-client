@@ -111,9 +111,9 @@ export default function Navbar(props) {
 
   const category = (
     <Menu>
-      <Menu.SubMenu title='Departmental'>
+      <Menu.SubMenu key={'departmental'} title='Departmental'>
         {departments?.map((dept) => (
-          <Menu.SubMenu title={dept?.name} key={dept._id}>
+          <Menu.SubMenu title={dept.name} key={dept._id}>
             {dept?.semesters?.map((semester) => (
               <Menu.Item
                 onClick={() =>
@@ -129,8 +129,8 @@ export default function Navbar(props) {
           </Menu.SubMenu>
         ))}
       </Menu.SubMenu>
-      <Menu.SubMenu title='Non_Departmental'>
-        <Menu.Item>coming soon...</Menu.Item>
+      <Menu.SubMenu key={'non-dept'} title='Non_Departmental'>
+        <Menu.Item key={'co'}>coming soon...</Menu.Item>
       </Menu.SubMenu>
     </Menu>
   )

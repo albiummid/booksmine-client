@@ -35,7 +35,7 @@ export default function Layout({ children }) {
         </Affix>
       )}
 
-      <div className='bg-gray-50'>{children}</div>
+      <div className='min-h-[80vh]'>{children}</div>
       {router.route !== '/login' && (
         <>
           <Footer />

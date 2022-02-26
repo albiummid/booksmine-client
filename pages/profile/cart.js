@@ -36,7 +36,7 @@ function Cart() {
         email,
         phone,
       },
-      orders: liteCart,
+      books: liteCart,
     }
     try {
       const { data } = await API.post('/order/add', orderObj)

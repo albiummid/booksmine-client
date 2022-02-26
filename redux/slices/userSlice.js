@@ -6,6 +6,7 @@ const initialState = {
   user: {},
   error: null,
   userSettings: {},
+  orders: [],
 }
 
 const userSlice = createSlice({
@@ -27,12 +28,31 @@ const userSlice = createSlice({
     getUserSettings: (state, { payload }) => {
       state.userSettings = payload
     },
+    getOrders: (state) => {
+      state.loading = true
+    },
+    getOrdersSuccess: (state, { payload }) => {
+      state.loading = false
+      state.orders = payload
+      state.error = null
+    },
+    getOrdersFailure: (state, { payload }) => {
+      state.loading = false
+      state.error = payload
+    },
   },
 })
 
 export default userSlice.reducer
-export const { getUser, getUserSuccess, getUserFailure, getUserSettings } =
-  userSlice.actions
+export const {
+  getUser,
+  getUserSuccess,
+  getUserFailure,
+  getUserSettings,
+  getOrders,
+  getOrdersSuccess,
+  getOrdersFailure,
+} = userSlice.actions
 export const userSelector = (state) => state.user
 
 export function fetchUser(email) {
@@ -48,6 +68,20 @@ export function fetchUser(email) {
       dispatch(getUserSuccess(data.user))
     } catch (err) {
       dispatch(getUserFailure(err))
+    }
+  }
+}
+
+export function fetchOrders(email) {
+  return async (dispatch) => {
+    dispatch(getOrders())
+    try {
+      const { data } = await API.get('/order/getOrdersBy?email=' + email)
+      dispatch(getOrdersSuccess(data.orders))
+      console.log(data)
+    } catch (err) {
+      dispatch(getOrdersFailure(err))
+      console.log(err)
     }
   }
 }
