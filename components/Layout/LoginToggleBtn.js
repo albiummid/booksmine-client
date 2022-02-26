@@ -34,7 +34,7 @@ export default function LoginToggleBtn() {
         <Link href='/profile/cart'>Cart Items</Link>
       </Menu.Item>
       <Menu.Item key={3}>
-        <Link href='/profile/orders'>Order List</Link>
+        <Link href='/profile/order-list'>Order List</Link>
       </Menu.Item>
 
       <Menu.Item key={4}>

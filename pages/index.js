@@ -21,7 +21,7 @@ function Home() {
         <h4>On development</h4>
         <div className='mx-auto py-3 flex gap-5 overflow-scroll no-scrollbar'>
           {books.length &&
-            books.slice(0, 20).map((book) =>
+            books.slice(0, 15).map((book) =>
               book.discount > 0 ? (
                 <Badge.Ribbon
                   color={'volcano'}

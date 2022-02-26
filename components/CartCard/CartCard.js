@@ -27,7 +27,7 @@ export default function CartCard({ book }) {
   } = book
   return (
     <>
-      <div className='cart__container flex  items-center justify-center gap-2 shadow-xl shadow-gray-200 my-2 min-w-[350px] max-w-[400px] '>
+      <div className='cart__container flex  items-center justify-center gap-2 shadow-md shadow-gray-200 my-3 min-w-[350px] max-w-[400px] '>
         <div className='img__container '>
           <img className='w-[50px]' src={imgUrl} alt={imgUrl} />
         </div>

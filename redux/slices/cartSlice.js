@@ -22,7 +22,6 @@ const cartSlice = createSlice({
       state.loading = false
       const newItem = payload
       state.cart.push({ ...newItem, quantity: 1 })
-      toast.success(`The book '${payload.title}' added to cart.`)
     },
 
     removeFromCart: (state, { payload }) => {
@@ -31,7 +30,6 @@ const cartSlice = createSlice({
       if (existItemIndex >= 0) {
         const newCart = state.cart.filter((item) => item._id !== id)
         state.cart = newCart
-        toast.info('The book removed from cart ')
       } else {
         toast.error('Product not exists in the cart !')
       }
@@ -48,9 +46,7 @@ const cartSlice = createSlice({
     quantityDecrement: (state, { payload }) => {
       const id = payload._id
       const itemIndex = state.cart.findIndex((item) => item._id === id)
-      if (state.cart[itemIndex].quantity === 1) {
-        toast.info('Quantity have to minimum 1')
-      } else {
+      if (state.cart[itemIndex].quantity > 1) {
         state.cart[itemIndex].quantity -= 1
       }
     },
