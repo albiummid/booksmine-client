@@ -53,11 +53,11 @@ export default function LoginToggleBtn() {
         <Dropdown overlay={menuItems}>
           <div className='flex justify-center items-center gap-1 border-dotted border-gray-200 px-1.5 py-1 rounded'>
             <img
-              className='rounded-full w-5 md:w-8'
+              className='rounded-full w-8'
               src={data.user.image}
               alt={data.user.name}
             />
-            <p className='text-[10px] md:text-sm'>{data.user.name}</p>
+            <p className='text-sm'>{data.user.name}</p>
             <DownOutlined />
           </div>
         </Dropdown>

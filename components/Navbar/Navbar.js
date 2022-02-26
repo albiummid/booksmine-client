@@ -1,14 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { SettingOutlined } from '@ant-design/icons/lib/icons'
-import {
-  AutoComplete,
-  Badge,
-  Button,
-  Dropdown,
-  Input,
-  Menu,
-  Tooltip,
-} from 'antd'
+import { AutoComplete, Badge, Button, Dropdown, Input, Menu } from 'antd'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -16,7 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { bookSelector, fetchBooks } from '../../redux/slices/bookSlice'
-import { cartSelector } from '../../redux/slices/cartSlice'
+import { cartSelector, loadCart } from '../../redux/slices/cartSlice'
 import {
   departmentSelector,
   fetchDepartments,
@@ -37,6 +29,17 @@ export default function Navbar(props) {
   } = useSelector(departmentSelector)
   const { books, loading: dLD, error: dERR } = useSelector(bookSelector)
   const { cart } = useSelector(cartSelector)
+
+  useEffect(() => {
+    setLoading(true)
+    const savedCart = JSON.parse(localStorage.getItem('cart')) || []
+    dispatch(loadCart(savedCart))
+    setLoading(false)
+  }, [dispatch])
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart))
+  }, [cart])
 
   useEffect(() => {
     dispatch(fetchBooks())
@@ -147,22 +150,20 @@ export default function Navbar(props) {
         <div className='action_container flex place-items-center gap-2 xl:order-3 md:gap-4 cursor-pointer '>
           <Authorize roleFor={['admin', 'developer', 'editor']}>
             <Link href={'/dashboard'} passHref>
-              <Tooltip title={'Dashboard'}>
-                <SettingOutlined className='text-xl mt-2 md:text-2xl hidden sm:block' />
-              </Tooltip>
+              <SettingOutlined className='text-xl mt-2 md:text-2xl hidden sm:block' />
             </Link>
           </Authorize>
-          <Link href={'/profile/cart'} passHref>
-            <Tooltip title={'Cart'}>
-              <Badge count={cart.length} showZero={false}>
-                <img
-                  className='hover:opacity-60 w-5 md:w-6'
-                  src={'/images/icons/shopping-bag.svg'}
-                  alt={'shopingBag'}
-                />
-              </Badge>
-            </Tooltip>
-          </Link>
+
+          <Badge count={cart.length} showZero={false}>
+            <Link href={'/profile/cart'} passHref>
+              <img
+                className='hover:opacity-60 w-5 md:w-6'
+                src={'/images/icons/shopping-bag.svg'}
+                alt={'shopingBag'}
+              />
+            </Link>
+          </Badge>
+
           <LoginToggleBtn />
         </div>
 

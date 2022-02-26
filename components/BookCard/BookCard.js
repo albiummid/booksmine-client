@@ -106,13 +106,13 @@ export default function BookCard({ book }) {
               <HeartFilled
                 onClick={() => dispatch(undoFavorite(_id))}
                 twoToneColor='#eb2f96'
-                className='text-sm md:text-[20px] hover:opacity-70 text-red-400 '
+                className='text-lg  hover:opacity-70 text-red-400 '
               />
             ) : (
               <HeartOutlined
                 onClick={() => dispatch(doFavorite(_id))}
                 twoToneColor='#eb2f96'
-                className='text-sm md:text-[20px] hover:opacity-70 text-gray-400 '
+                className='text-lg  hover:opacity-70 text-gray-400 '
               />
             )}
           </div>
@@ -120,12 +120,12 @@ export default function BookCard({ book }) {
             {isCarted ? (
               <ShoppingFilled
                 onClick={() => dispatch(removeFromCart(book))}
-                className='text-sm md:text-[20px] hover:opacity-70 text-orange-400'
+                className='text-lg  hover:opacity-70 text-orange-400'
               />
             ) : (
               <ShoppingOutlined
                 onClick={() => dispatch(addToCart(book))}
-                className='text-sm md:text-[20px] hover:opacity-70 text-orange-400'
+                className='text-lg  hover:opacity-70 text-orange-400'
               />
             )}
           </div>

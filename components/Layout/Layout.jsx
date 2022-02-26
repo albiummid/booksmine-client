@@ -16,14 +16,15 @@ export default function Layout({ children }) {
     <div className='md:container'>
       <>
         <ToastContainer
-          position='top-right'
-          theme='colored'
+          position='top-center'
+          theme='light'
           autoClose={1500}
           hideProgressBar={false}
           newestOnTop
           closeOnClick
+          limit={0}
           rtl={false}
-          pauseOnFocusLoss
+          // pauseOnFocusLoss
           draggable
           pauseOnHover
         />
@@ -34,7 +35,7 @@ export default function Layout({ children }) {
         </Affix>
       )}
 
-      <>{children}</>
+      <div className='bg-gray-50'>{children}</div>
       {router.route !== '/login' && (
         <>
           <Footer />
