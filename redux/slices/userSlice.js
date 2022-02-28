@@ -77,7 +77,11 @@ export function fetchOrders(email) {
     dispatch(getOrders())
     try {
       const { data } = await API.get('/order/getOrdersBy?email=' + email)
-      dispatch(getOrdersSuccess(data.orders))
+      try {
+        dispatch(getOrdersSuccess(data.orders))
+      } catch (err) {
+        console.log(err, 'err of dispatch')
+      }
       console.log(data)
     } catch (err) {
       dispatch(getOrdersFailure(err))

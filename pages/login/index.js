@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import { getSession } from 'next-auth/react'
-import { signIn, useSession, signOut } from 'next-auth/react'
 import {
-  signInWithEmailAndPassword,
+  LockOutlined,
+  MailOutlined,
+  UserOutlined,
+} from '@ant-design/icons/lib/icons'
+import { Divider, Form } from 'antd'
+import {
   createUserWithEmailAndPassword,
   getAuth,
-  onAuthStateChanged,
+  signInWithEmailAndPassword,
   updateProfile,
 } from 'firebase/auth'
-import app from '../../config/firebase'
-import { Button, Divider, Form, Input } from 'antd'
+import { signIn, useSession } from 'next-auth/react'
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import {
   ButtonSubmit,
@@ -21,14 +25,7 @@ import {
   SocialCard,
   SocialLoginContainer,
 } from '../../components/Layout/Elements.styles'
-import {
-  LockOutlined,
-  MailOutlined,
-  UserOutlined,
-} from '@ant-design/icons/lib/icons'
-import Image from 'next/image'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
-import { useRouter } from 'next/router'
 const Login = () => {
   const auth = getAuth()
   const router = useRouter()
@@ -166,6 +163,7 @@ const Login = () => {
                 ]}
               >
                 <InputText
+                  large={true}
                   type='email'
                   placeholder='Email address'
                   prefix={<MailOutlined />}
@@ -212,7 +210,11 @@ const Login = () => {
                 rules={[{ required: true, message: 'Please write your name!' }]}
                 hasFeedback
               >
-                <InputText placeholder='Name' prefix={<UserOutlined />} />
+                <InputText
+                  large={true}
+                  placeholder='Name'
+                  prefix={<UserOutlined />}
+                />
               </Form.Item>
               <Form.Item
                 style={{ width: '100%' }}
@@ -232,6 +234,7 @@ const Login = () => {
                 hasFeedback
               >
                 <InputText
+                  large={true}
                   placeholder='Email address'
                   prefix={<MailOutlined />}
                 />

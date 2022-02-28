@@ -87,7 +87,7 @@ export const ResetContainer = styled.div`
 
 export const InputText = styled(Input)`
   width: 100%;
-  font-size: 18px;
+  font-size: ${(props) => (props.large ? '18px' : '14px')};
   border: none;
   border-radius: 10px;
   outline: none;

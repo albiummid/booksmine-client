@@ -201,5 +201,6 @@ function Cart() {
     </div>
   )
 }
+Cart.auth = true
 
 export default Cart
