@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css'
 import { localAPI, serverAPI } from '../../API/API'
 import DashboardLayout from '../../components/Layout/DashboardLayout'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import { getUserSettings, userSelector } from '../../redux/slices/userSlice'
 
 function Dashboard() {
@@ -14,6 +15,9 @@ function Dashboard() {
   const { data: session } = useSession()
   const router = useRouter()
   const { user, userSettings, loading } = useSelector(userSelector)
+  let isServer =
+    JSON.parse(localStorage.getItem('userSettings'))?.isServer ||
+    userSettings.isServer
 
   console.log(session)
   const changeAPI = async (value) => {
@@ -32,7 +36,7 @@ function Dashboard() {
     }
   }
 
-  // if (loading) return <LoadingSpinner />
+  if (loading) return <LoadingSpinner />
 
   return (
     <>
@@ -46,11 +50,7 @@ function Dashboard() {
           <Select
             onChange={(v) => changeAPI(v)}
             className='w-[100px]'
-            value={
-              JSON.parse(localStorage.getItem('userSettings')).isServer
-                ? 'server'
-                : 'local'
-            }
+            value={isServer ? 'server' : 'local'}
           >
             <Select.Option value={'local'}>Local</Select.Option>
             <Select.Option value={'server'}>Server</Select.Option>

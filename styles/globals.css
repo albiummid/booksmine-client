@@ -26,3 +26,9 @@ h6 {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.scroll {
+  display: flex;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}

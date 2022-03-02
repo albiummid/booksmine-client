@@ -18,18 +18,16 @@ import {
 } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
-import API from '../../API/API'
-import DashboardLayout from '../../components/Layout/DashboardLayout'
+import API from '../API/API'
 
-const Transactions = () => {
+const EditableTable = () => {
   const [form] = Form.useForm()
-  const [isLoading, setIsLoading] = useState(true)
   const [trxData, setTrxData] = useState([])
   const [tableData, setTableData] = useState(trxData)
   const [editingKey, setEditingKey] = useState('')
   const focusRef = useRef(null)
 
-  const isEditing = (record) => record?._id === editingKey
+  const isEditing = (record) => record.key === editingKey
 
   useEffect(() => {
     const fetch = async () => {
@@ -37,9 +35,7 @@ const Transactions = () => {
         const { data } = await API.get('/transaction/all')
         setTableData(data.transactions)
         setTrxData(data.transactions)
-        setIsLoading(false)
       } catch (err) {
-        setIsLoading(false)
         console.log(err)
       }
     }
@@ -52,39 +48,42 @@ const Transactions = () => {
     }
   }, [editingKey])
 
-  useEffect(() => {
-    setTableData(trxData)
-  }, [trxData])
-
   // All Functions //
 
   const edit = (record) => {
     form.setFieldsValue({
       ...record,
     })
-    setEditingKey(record._id)
+    setEditingKey(record.key)
   }
 
-  const cancelEdit = () => {
-    setTableData(trxData)
+  const cancel = () => {
+    const previousData = tableData.filter((item) => item.key !== editingKey)
+    setTableData(previousData)
     setEditingKey('')
   }
 
   const save = async () => {
     try {
       const updatedRow = await form.validateFields()
-      const index = trxData.findIndex((item) => item._id === editingKey)
-      if (index >= 0) {
-        const { data } = await API.patch('/transaction/' + editingKey, {
-          ...updatedRow,
-        })
-        cancelEdit()
-        setTrxData(data.transactions)
+      console.log(updatedRow)
+      const index = tableData.findIndex((item) => item.key === editingKey)
+      const { _id } = tableData[index]
+
+      if (_id?.length) {
+        console.log('updating')
+        const { data } = await API.patch('/transaction/' + _id)
+        setTableData(data.transactions)
+        setEditingKey('')
+
+        // const item = newData[index]
+        // newData.splice(index, 1, { ...item, ...updatedRow })
+        //here we assign item because,, item contains some value that updatedRow don't...as id so.. after assigning updatedRow it will replace the changed value of that object.
         return
       }
-      const { data } = await API.post('/transaction/', { ...updatedRow })
-      cancelEdit()
-      setTrxData([data.transaction, ...trxData])
+      console.log('creating New')
+      const { data } = await API.post('/transaction/', { updatedRow })
+      setTableData([data.transaction, ...tableData])
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo)
     }
@@ -93,7 +92,7 @@ const Transactions = () => {
     try {
       const { data } = await API.delete('/transaction/' + id)
       toast.success('Deleted !')
-      setTrxData(data.transactions)
+      setTableData(data.transactions)
     } catch (err) {
       console.log(err)
     }
@@ -122,34 +121,32 @@ const Transactions = () => {
     {
       title: 'Trx Id',
       dataIndex: 'trxId',
-      width: 200,
+      width: '25%',
       editable: true,
     },
     {
       title: 'Trx Balance',
       dataIndex: 'trxBalance',
-      width: 50,
+      width: '15%',
       editable: true,
     },
     {
       title: 'Phone',
       dataIndex: 'phone',
-      width: 100,
+      width: '40%',
       editable: true,
       filterSearch: true,
     },
     {
       title: 'Is Valid',
       dataIndex: 'isValid',
-      width: 50,
+      width: '40%',
       editable: true,
       align: 'center',
     },
     {
       title: 'Action',
       dataIndex: 'Action',
-      width: 100,
-      align: 'center',
       render: (_, record) => {
         const editable = isEditing(record)
         return editable ? (
@@ -159,7 +156,7 @@ const Transactions = () => {
                 <CheckOutlined />
               </Button>
             </Popconfirm>
-            <Button onClick={cancelEdit}>
+            <Button onClick={cancel}>
               <CloseOutlined />
             </Button>
           </span>
@@ -176,7 +173,7 @@ const Transactions = () => {
             </Button>
             <Button
               className='text-red-400 hover:border-red-400'
-              onClick={() => deleteTrx(record._id)}
+              onClick={() => deleteTrx(record.id)}
             >
               <DeleteOutlined />
             </Button>
@@ -195,31 +192,29 @@ const Transactions = () => {
       render: (tableData, rowData) => (
         <>
           {isEditing(rowData) ? (
-            <>
-              <Form.Item
-                name={col.dataIndex}
-                rules={[
-                  { required: true, message: ` ${col.title} is required !` },
-                ]}
-              >
-                {col.dataIndex === 'trxBalance' ? (
-                  <InputNumber min={0} />
-                ) : col.dataIndex === 'isValid' ? (
-                  <Select value={tableData} style={{ width: '100px' }}>
-                    <Select.Option value={true} key={1}>
-                      True
-                    </Select.Option>
-                    <Select.Option value={false} key={2}>
-                      False
-                    </Select.Option>
-                  </Select>
-                ) : col.dataIndex === 'trxId' ? (
-                  <Input ref={focusRef} />
-                ) : (
-                  <Input />
-                )}
-              </Form.Item>
-            </>
+            <Form.Item
+              name={col.dataIndex}
+              rules={[
+                { required: true, message: ` ${col.title} is required !` },
+              ]}
+            >
+              {col.dataIndex === 'trxBalance' ? (
+                <InputNumber min={0} />
+              ) : col.dataIndex === 'isValid' ? (
+                <Select value={tableData} style={{ width: '100px' }}>
+                  <Select.Option value={true} key={1}>
+                    True
+                  </Select.Option>
+                  <Select.Option value={false} key={2}>
+                    False
+                  </Select.Option>
+                </Select>
+              ) : col.dataIndex === 'trxId' ? (
+                <Input ref={focusRef} />
+              ) : (
+                <Input />
+              )}
+            </Form.Item>
           ) : (
             <div>
               {col.dataIndex === 'isValid' ? (
@@ -254,14 +249,13 @@ const Transactions = () => {
           disabled={editingKey !== ''}
           onClick={() => {
             const newRecord = {
-              _id: (Math.random() * 1000).toString(),
+              key: (Math.random() * 1000).toString(),
               trxId: '',
               trxBalance: 0,
               isValid: true,
               phone: '',
             }
-            const preD = tableData || []
-            setTableData([newRecord, ...preD])
+            setTableData([newRecord, ...tableData])
             edit(newRecord)
           }}
         >
@@ -272,18 +266,18 @@ const Transactions = () => {
   )
 
   return (
-    <DashboardLayout>
-      <Form form={form}>
-        <Table
-          loading={isLoading}
-          title={tableHeader}
-          bordered
-          dataSource={tableData}
-          columns={mergedColumns}
-        />
-      </Form>
-    </DashboardLayout>
+    <Form form={form}>
+      <Table
+        title={tableHeader}
+        bordered
+        dataSource={tableData}
+        columns={mergedColumns}
+        pagination={{
+          onChange: cancel,
+        }}
+      />
+    </Form>
   )
 }
 
-export default Transactions
+export default EditableTable

@@ -44,17 +44,19 @@ const BooksMng = ({ isAcademic }) => {
       const academicBooks = books.filter((item) => item.category === 'academic')
       setBookList(academicBooks)
       console.log('done from academic')
-      return //return means this funcio=
+      return
     }
     const nonAcademicBooks = books.filter(
       (item) => item.category !== 'academic'
     )
+
     setBookList(nonAcademicBooks)
-    console.log('done From non academic')
+    console.log('done From non academic', nonAcademicBooks)
   }, [books, isAcademic])
   useEffect(() => {
     setTableData(booksList)
   }, [booksList])
+  console.log(booksList, tableData)
 
   useEffect(() => {
     if (edit._id) {
@@ -70,36 +72,17 @@ const BooksMng = ({ isAcademic }) => {
     if (filter.length) {
       let fData = booksList?.filter(
         (item) =>
-          item.title
-            .toString()
-            .toLowerCase()
-            .includes(filter.toLocaleLowerCase()) ||
-          item.author
-            .toString()
-            .toLowerCase()
-            .includes(filter.toLocaleLowerCase())
-            .includes(filter.toLocaleLowerCase()) ||
-          item.originalPrice
-            .toString()
-            .toLowerCase()
-            .includes(filter.toLocaleLowerCase())
-            .includes(filter.toLocaleLowerCase()) ||
-          item.category
-            .toString()
-            .toLowerCase()
-            .includes(filter.toLocaleLowerCase())
-            .includes(filter.toLocaleLowerCase()) ||
-          item?.courseCode
-            .toString()
-            .toLowerCase()
-            .includes(filter.toLocaleLowerCase())
+          item.title.toLowerCase().includes(filter.toLocaleLowerCase()) ||
+          item.author.toLowerCase().includes(filter.toLocaleLowerCase()) ||
+          item.category.toLowerCase().includes(filter.toLocaleLowerCase()) ||
+          item?.courseCode.toLowerCase().includes(filter.toLocaleLowerCase())
       )
       setTableData(fData)
     }
     if (filter.length === 0) {
       setTableData(tableData)
     }
-  }, [filter, tableData, books])
+  }, [filter])
 
   const onReset = () => {
     setEdit({})
@@ -126,7 +109,7 @@ const BooksMng = ({ isAcademic }) => {
       })
   }
 
-  const tableColums = [
+  const tableColumns = [
     {
       key: 'No',
       title: 'No.',
@@ -184,6 +167,7 @@ const BooksMng = ({ isAcademic }) => {
       key: 'CourseCode',
       title: 'CourseCode',
       dataIndex: 'courseCode',
+      hidden: !isAcademic,
       //   key:'title'
     },
 
@@ -232,7 +216,8 @@ const BooksMng = ({ isAcademic }) => {
         </Space>
       ),
     },
-  ]
+  ].filter((item) => !item.hidden)
+
   const { Option } = Select
 
   const tableHeader = () => (
@@ -301,7 +286,7 @@ const BooksMng = ({ isAcademic }) => {
         </Drawer>
         <Table
           dataSource={tableData}
-          columns={tableColums}
+          columns={tableColumns}
           loading={loading}
           size='small'
           pagination={{
@@ -309,7 +294,7 @@ const BooksMng = ({ isAcademic }) => {
           }}
           title={tableHeader}
           bordered='true'
-          scroll={{ x: '500px' }}
+          scroll={{ x: '500px', y: '300px' }}
         />
       </div>
     </>

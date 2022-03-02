@@ -13,7 +13,7 @@ export default function Layout({ children }) {
   if (status === 'loading') return <LoadingSpinner />
 
   return (
-    <div className='md:container'>
+    <div className='max-w-7xl mx-auto'>
       <>
         <ToastContainer
           position='top-center'

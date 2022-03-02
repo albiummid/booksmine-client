@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import API from '../../API/API'
 import DashboardLayout from '../../components/Layout/DashboardLayout'
+import Authorize from '../../utils/Authorize'
 
 export default function ManageRole() {
   const [allUserData, setAllUserData] = useState([])
@@ -121,14 +122,6 @@ export default function ManageRole() {
       width: 200,
     },
     {
-      key: 'id',
-      title: 'User Id',
-      dataIndex: '_id',
-      sorter: (a, b) =>
-        a.userName.toLowerCase().localeCompare(b.userName.toLowerCase()),
-      width: 220,
-    },
-    {
       key: 'email',
       title: 'Email',
       dataIndex: 'email',
@@ -143,7 +136,7 @@ export default function ManageRole() {
       dataIndex: 'role',
       sorter: (a, b) =>
         a.imgUrl.toLowerCase().localeCompare(b.imgUrl.toLowerCase()),
-      width: 80,
+      width: 130,
       render: (value, record) => (
         <>
           <Select
@@ -182,15 +175,17 @@ export default function ManageRole() {
   const { Option } = Select
   return (
     <DashboardLayout>
-      <Table
-        dataSource={tableData}
-        columns={tableColumns}
-        loading={loading}
-        size='small'
-        title={tableHeader}
-        bordered='true'
-        scroll={{ x: '500px' }}
-      />
+      <Authorize roleFor={['admin']}>
+        <Table
+          dataSource={tableData}
+          columns={tableColumns}
+          loading={loading}
+          size='small'
+          title={tableHeader}
+          bordered='true'
+          scroll={{ x: '500px' }}
+        />
+      </Authorize>
     </DashboardLayout>
   )
 }

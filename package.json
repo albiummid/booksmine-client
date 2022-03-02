@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@ant-design/pro-card": "^1.18.33",
+    "@ant-design/pro-form": "^1.55.0",
+    "@ant-design/pro-table": "^2.64.1",
     "@auth0/nextjs-auth0": "^1.7.0",
     "@mui/icons-material": "^5.4.2",
     "@next-auth/mongodb-adapter": "^0.0.2-next.298",
@@ -38,7 +41,8 @@
     "redux-thunk": "^2.4.1",
     "styled-components": "^5.3.3",
     "suneditor": "^2.42.0",
-    "suneditor-react": "^3.4.0"
+    "suneditor-react": "^3.4.0",
+    "swiper": "^8.0.6"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.2",

@@ -1,10 +1,14 @@
 import { Badge } from 'antd'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+// Import Swiper styles
+import 'swiper/css'
+import 'swiper/css/free-mode'
+import 'swiper/css/pagination'
 import BookCard from '../components/BookCard/BookCard'
-import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner'
 import { bookSelector, fetchBooks } from '../redux/slices/bookSlice'
 import MetaData from '../utils/MetaData'
+
 function Home() {
   const { books, loading } = useSelector(bookSelector)
   const dispatch = useDispatch()
@@ -12,7 +16,7 @@ function Home() {
   useEffect(() => {
     dispatch(fetchBooks())
   }, [dispatch])
-  if (loading) return <LoadingSpinner />
+  // if (loading) return <LoadingSpinner />
   return (
     <>
       <MetaData title={'BooksMine'} />
@@ -20,6 +24,7 @@ function Home() {
         <h1>BooksMine</h1>
 
         <h4>On development</h4>
+
         <div className='mx-auto py-3 flex gap-5 overflow-scroll no-scrollbar'>
           {books.length &&
             books.slice(0, 15).map((book) =>

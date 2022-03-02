@@ -1,9 +1,21 @@
-import { UploadOutlined } from '@ant-design/icons'
-import { Button, Form, Input, Radio, Select, Tooltip, Typography } from 'antd'
+import { DeleteOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons'
+import {
+  Button,
+  Divider,
+  Form,
+  Input,
+  Modal,
+  Radio,
+  Select,
+  Space,
+  Tooltip,
+  Typography,
+} from 'antd'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import styled from 'styled-components'
 import API from '../../../API/API'
+import Authorize from '../../../utils/Authorize'
 import {
   ButtonSubmit,
   FileUpload,
@@ -11,6 +23,7 @@ import {
   NumberInput,
   SelectOption,
 } from '../../Layout/Elements.styles'
+import ExtraOption from '../../Layout/ExtraOption'
 export const FormGroup = styled.div`
   display: flex;
   align-items: center;
@@ -37,15 +50,26 @@ const AddBooks = ({ refetcher, editId, form, isAcademic }) => {
   const [loading, setLoading] = useState(false)
   const [image, setImage] = useState(null)
   const [allDept, setAllDept] = useState([])
-  const [currentDept, setCurrentDept] = useState({})
   const [allSemester, setAllSemester] = useState([])
-  const [currentSemester, setCurrentSemester] = useState({})
   const [allCourse, setAllCourse] = useState([])
+  const [allCatagories, setAllCategories] = useState([])
+  const [newCategory, setNewCategory] = useState('')
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    API.get(`/department/all`).then(({ data }) => {
-      setAllDept(data.departments)
-    })
+    setLoading(true)
+    API.get(`/department/all`)
+      .then(({ data }) => {
+        setAllDept(data.departments)
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false))
+    API.get('/category/all')
+      .then(({ data }) => {
+        console.log(data)
+        setAllCategories(data.categories)
+      })
+      .catch((err) => console.log(err))
   }, [])
 
   const { Option } = Select
@@ -62,14 +86,16 @@ const AddBooks = ({ refetcher, editId, form, isAcademic }) => {
     formData.append('originalPrice', data.originalPrice)
     formData.append('discount', data.discount)
     formData.append('ratings', 0)
-    formData.append('semester', data.semester)
-    formData.append('department', data.department)
-    formData.append('courseCode', data.courseCode)
     formData.append('inStock', data.inStock)
     formData.append('isStock', isStock)
     formData.append('imgUrl', data.imgUrl)
     formData.append('category', category)
     formData.append('summary', data.summary)
+    if (isAcademic) {
+      formData.append('semester', data.semester)
+      formData.append('department', data.department)
+      formData.append('courseCode', data.courseCode)
+    }
 
     if (image) {
       formData.append('file', image)
@@ -104,7 +130,6 @@ const AddBooks = ({ refetcher, editId, form, isAcademic }) => {
         .catch((err) => {
           refetcher()
           setImage(null)
-          toast.error("can't do that ")
           console.log(err)
         })
         .finally(() => {
@@ -138,6 +163,24 @@ const AddBooks = ({ refetcher, editId, form, isAcademic }) => {
     }
   }, [editId])
 
+  const addCategory = async () => {
+    // setAllCategories([...allCatagories, { title: newCategory }])
+    try {
+      const { data } = await API.post('/category/', { title: newCategory })
+      setAllCategories([...allCatagories, data.category])
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const deleteCategory = async (_id) => {
+    try {
+      const { data } = await API.delete('/category/' + _id)
+      setAllCategories(data.categories)
+      toast.success('successfully deleted')
+    } catch (err) {
+      console.log(err)
+    }
+  }
   return (
     <>
       <>
@@ -173,8 +216,7 @@ const AddBooks = ({ refetcher, editId, form, isAcademic }) => {
                     <Option key={data._id} value={data?.name}>
                       <Typography
                         onClick={() => {
-                          setCurrentDept(data)
-                          setAllSemester(data?.semesters)
+                          setAllSemester(data?.semesters) || []
                         }}
                       >
                         {data?.name}
@@ -196,7 +238,6 @@ const AddBooks = ({ refetcher, editId, form, isAcademic }) => {
                         <Option key={data._id} value={data.title}>
                           <Typography
                             onClick={() => {
-                              setCurrentSemester(data)
                               setAllCourse(data?.courses || [])
                             }}
                           >
@@ -336,30 +377,94 @@ const AddBooks = ({ refetcher, editId, form, isAcademic }) => {
               </Form.Item>
               <h3>Category:</h3>
 
-              <Form.Item
-                rules={[{ required: true }]}
-                title='department'
-                name='category'
-              >
-                <SelectOption defaultValue={'Select Category'}>
-                  {categoryList.map((item, i) => (
-                    <Option value={item.title} key={i}>
-                      {item.title}
-                    </Option>
-                  ))}
-                </SelectOption>
-              </Form.Item>
-              <FormGroup>
-                <div>
-                  <b>Summary:</b>
-                  <Form.Item
-                    style={{ width: '100%' }}
-                    rules={[{ required: true }]}
-                    name='summary'
+              <div className='flex justify-between  w-[100%]'>
+                <Form.Item
+                  rules={[{ required: true }]}
+                  title='department'
+                  name='category'
+                >
+                  <SelectOption
+                    style={{ width: '400px' }}
+                    defaultValue={'Select Category'}
+                    dropdownRender={(menu) => (
+                      <>
+                        {menu}
+                        <Divider style={{ margin: '8px 0' }} />
+                        <Space className='flex justify-center gap-4 my-2'>
+                          <Input
+                            placeholder='Please enter item'
+                            onChange={(e) => setNewCategory(e.target.value)}
+                          />
+                          <Button
+                            onClick={addCategory}
+                            style={{ whiteSpace: 'nowrap' }}
+                          >
+                            <PlusOutlined /> Add item
+                          </Button>
+                        </Space>
+                      </>
+                    )}
                   >
+                    {allCatagories?.map((item, i) => (
+                      <ExtraOption
+                        onClick={() => {
+                          console.log('D')
+                        }}
+                        value={item.title}
+                        key={i}
+                      >
+                        {item.title}
+                      </ExtraOption>
+                    ))}
+                  </SelectOption>
+                </Form.Item>
+                <Authorize roleFor={['admin', 'developer']}>
+                  <DeleteOutlined
+                    className='font-bold text-3xl opacity-75 hover:opacity-100 cursor-pointer text-red-500'
+                    onClick={() => {
+                      setVisible(true)
+                    }}
+                  />
+                </Authorize>
+                <Modal
+                  title='Delete Category'
+                  visible={visible}
+                  cancelButtonProps={false}
+                  onOk={() => setVisible(false)}
+                  onCancel={() => setVisible(false)}
+                  okText='Done'
+                  cancelText='Cancel'
+                >
+                  {allCatagories.length ? (
+                    <>
+                      {allCatagories?.map((item) => (
+                        <div
+                          key={item._id}
+                          className='flex justify-between mx-2 shadow-lg my-2 p-2'
+                        >
+                          <p>{item.title}</p>
+
+                          <DeleteOutlined
+                            onClick={() => deleteCategory(item._id)}
+                            className='text-red-400 text-2xl'
+                          />
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <div>No Categories !</div>
+                  )}
+                </Modal>
+              </div>
+
+              <FormGroup>
+                <div className='w-100'>
+                  <b>Summary:</b>
+                  <Form.Item rules={[{ required: true }]} name='summary'>
                     <Input.TextArea
+                      bordered={true}
                       placeholder='Write summary about this book! '
-                      autoSize={{ minRows: 3, maxRows: 5 }}
+                      // autoSize={{ minRows: 3, maxRows: 5 }}
                     />
                   </Form.Item>
                 </div>

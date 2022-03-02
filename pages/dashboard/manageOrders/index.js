@@ -14,7 +14,7 @@ const ManageOrders = () => {
   const [trxIdHidden, setTrxIdHidden] = useState(true)
   const [orders, setOrders] = useState([])
   const [tableData, setTableData] = useState([])
-  const [activeFilter, setActiveFilter] = useState('pending')
+  const [activeFilter, setActiveFilter] = useState('verifying')
   const [trxBalance, setTrxBalance] = useState([
     { trxId: 'albiummid', balance: 1000 },
     { trxId: 'adham', balance: 2000 },
@@ -39,7 +39,7 @@ const ManageOrders = () => {
   }
 
   useEffect(() => {
-    if (!tableData.length) {
+    if (!tableData?.length) {
       setActiveFilter('all')
     }
   }, [])
@@ -47,22 +47,40 @@ const ManageOrders = () => {
   // Fetching Data
   useEffect(() => {
     setLoading(true)
-    API.get('/order/all')
-      .then((res) => {
-        console.log(res.data)
-        setOrders(res.data.orders)
-        setTableData(res.data.orders)
+    const fetchOrderTable = async () => {
+      const { data: orderData } =
+        activeFilter === 'all'
+          ? await API.get('/order/all')
+          : await API.get('/order/status/' + activeFilter)
+      const { data: trxData } = await API.get('/transaction/all')
+      const orderList = orderData.orders
+      const trxList = trxData.transactions
 
-        //   const orderData = res.data.orders
-        //   const TempData = orderData?.map((d) => {
-        //     const indexOfTrx = trxBalance?.findIndex((tb) => tb.trxId === d.trxId)
-        //     const balance = trxBalance[indexOfTrx]?.balance || 0
-        //     return { ...d, trxBalance: balance }
-        //   })
+      console.log(orderList, trxList)
+
+      //next time this will be on backend
+      //on Every trxAdded to the server,It will add the trxBalance to the order Item...
+
+      const mutatedList = orderList?.map((item) => {
+        let trxBalance = 0
+        trxList.forEach((trx) => {
+          if (trx.trxId === item.trxId) {
+            trxBalance += trx.trxBalance
+          }
+        })
+        const newItem = {
+          ...item,
+          trxBalance,
+        }
+        return newItem
       })
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false))
-  }, [refetch])
+
+      setOrders(mutatedList)
+      setTableData(mutatedList)
+      setLoading(false)
+    }
+    fetchOrderTable()
+  }, [refetch, activeFilter])
 
   // Search Handler
   useEffect(() => {
@@ -128,6 +146,7 @@ const ManageOrders = () => {
       dataIndex: 'user',
       responsive: ['xl'],
       align: 'center',
+      width: 250,
       render: (user) => <p>{user.email}</p>,
       hidden: emailHidden,
     },
@@ -161,7 +180,7 @@ const ManageOrders = () => {
       key: 'Bill',
       title: 'Total Bill',
       dataIndex: 'totalBill',
-      render: (value) => <span>{value}</span>,
+      render: (value) => <span>{value} ৳ </span>,
       width: 100,
       align: 'center',
     },
@@ -175,18 +194,28 @@ const ManageOrders = () => {
         <>
           <Select
             loading={loading}
-            value={record.status}
-            disabled={value === 'delivered'}
+            value={
+              record.status === 'processing' ? 'Processing' : record.status
+            }
+            disabled={value === 'delivered' || value === 'pending'}
             onChange={(v) => handleOrderStatus(v, record._id, record.title)}
           >
-            {value === 'done' || value === 'delivered' ? null : (
+            {value === 'verifying' && (
               <>
+                <Option key={'verifying'}>Verifying</Option>
                 <Option key={'pending'}>Pending</Option>
-                <Option key={'processing'}>Processing</Option>
               </>
             )}
-            {value !== 'delivered' && <Option key={'done'}>Done</Option>}
-            <Option key={'delivered'}>Delivered</Option>
+            {value === 'pending' && <Option key={'pending'}>Pending</Option>}
+
+            {(value === 'packing' ||
+              value === 'processing' ||
+              value === 'delivered') && (
+              <>
+                <Option key={'packing'}>Packing</Option>
+                <Option key={'delivered'}>Delivered</Option>
+              </>
+            )}
           </Select>
         </>
       ),
@@ -254,14 +283,17 @@ const ManageOrders = () => {
           value={activeFilter}
           onChange={(value) => setActiveFilter(value)}
         >
+          <Option key='1' value='verifying'>
+            Verifying
+          </Option>
           <Option key='1' value='pending'>
             Pending
           </Option>
           <Option key='2' value='processing'>
             Processing
           </Option>
-          <Option key='3' value='done'>
-            Done
+          <Option key='3' value='packing'>
+            Packing
           </Option>
           <Option key='5' value='delivered'>
             Delivered
@@ -283,8 +315,8 @@ const ManageOrders = () => {
       <Table
         dataSource={tableData}
         columns={tableColumns}
-        loading={loading}
         size='small'
+        loading={loading}
         title={tableHeader}
         bordered='true'
         scroll={{ x: '500px' }}

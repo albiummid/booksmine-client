@@ -3,7 +3,7 @@ import {
   ExclamationCircleOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons/lib/icons'
-import { Button, Modal, Select, Table, Tooltip } from 'antd'
+import { Button, Modal, Result, Select, Table, Tooltip } from 'antd'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -30,27 +30,6 @@ export default function OrderList() {
     dispatch(fetchOrders(data.user.email))
   }, [dispatch, data])
 
-  // if (lastOrder)
-  //   return (
-  //     <Result
-  //       status='success te'
-  //       title={`You have successfully order ${lastOrder?.orders?.length} books with different quantities.`}
-  //       subTitle={`Order number: "${lastOrder._id}", total bill was ${lastOrder.totalBill}Tk. and transactionID was "${lastOrder.trxId} ".Your order now on pending due to verify payment,takes 1-5 minutes...`}
-  //       extra={[
-  //         <Button
-  //           onClick={() => router.push('/profile/order-list')}
-  //           type='primary'
-  //           key='orderList'
-  //         >
-  //           View Order List
-  //         </Button>,
-  //         <Button key='buy' onClick={() => router.push('/')}>
-  //           Buy Again
-  //         </Button>,
-  //       ]}
-  //     />
-  //   )
-
   // Table Funtionality
   const tableHeader = () => (
     <div className='min-h-[40px] flex flex-wrap justify-evenly'>
@@ -62,9 +41,10 @@ export default function OrderList() {
           value={filter}
           style={{ width: 110 }}
         >
-          <Option value={'done'}>Done</Option>
+          <Option value={'verifying'}>Verifying</Option>
           <Option value={'pending'}>Pending</Option>
           <Option value={'processing'}>Processing</Option>
+          <Option value={'packing'}>Packing</Option>
           <Option value={'delivered'}>Delivered</Option>
         </Select>
         <Button
@@ -146,15 +126,15 @@ export default function OrderList() {
       align: 'center',
       render: (id, record) => (
         <>
-          {record.status !== 'pending' ? (
-            <Tooltip title={`order_id:${record._id}`}>
-              <InfoCircleOutlined className='text-2xl' />
-            </Tooltip>
-          ) : (
+          {record.status === 'verifying' ? (
             <DeleteOutlined
               onClick={() => getApprove(id)}
               className='text-red-400 text-2xl'
             />
+          ) : (
+            <Tooltip title={`order_id:${record._id}`}>
+              <InfoCircleOutlined className='text-2xl' />
+            </Tooltip>
           )}
         </>
       ),
@@ -196,15 +176,35 @@ export default function OrderList() {
 
   return (
     <div className='p-2'>
-      <Table
-        dataSource={tableData}
-        columns={tableColumns}
-        loading={loading}
-        size='small'
-        title={tableHeader}
-        bordered='true'
-        scroll={{ x: '600px' }}
-      />
+      {lastOrder ? (
+        <Result
+          status='success'
+          title={`You have successfully order ${lastOrder?.books?.length} books with different quantities.`}
+          subTitle={`Order number: "${lastOrder?._id}", total bill was ${lastOrder?.totalBill}Tk. and transactionID was "${lastOrder?.trxId} ".Your order now on pending due to verify payment,takes 1-5 minutes...`}
+          extra={[
+            <Button
+              onClick={() => router.push('/profile/order-list')}
+              type='primary'
+              key='orderList'
+            >
+              View Order List
+            </Button>,
+            <Button key='buy' onClick={() => router.push('/')}>
+              Buy Again
+            </Button>,
+          ]}
+        />
+      ) : (
+        <Table
+          dataSource={tableData}
+          columns={tableColumns}
+          loading={loading}
+          size='small'
+          title={tableHeader}
+          bordered='true'
+          scroll={{ x: '600px', y: '500px' }}
+        />
+      )}
     </div>
   )
 }

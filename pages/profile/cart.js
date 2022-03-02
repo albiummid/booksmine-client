@@ -29,7 +29,7 @@ function Cart() {
     const { name, email } = data.user
     const orderObj = {
       trxId,
-      status: 'pending',
+      status: 'verifying',
       totalBill: cartData.totalBill,
       user: {
         name,

@@ -74,7 +74,7 @@ export default function BookCard({ book }) {
     >
       <div className='image__container'>
         <Image
-          className='rounded-t-xl select-none'
+          className='rounded-t-xl '
           src={imgUrl}
           width={180}
           height={220}

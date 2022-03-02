@@ -1,11 +1,11 @@
 import { DownloadOutlined } from '@ant-design/icons'
-import { Button, Input, Select, Table } from 'antd'
+import { Button, Input, Table } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
 import API from '../../API/API'
 import DashboardLayout from '../../components/Layout/DashboardLayout'
 
-const OrderedBooks = ({ refetcher, refetch }) => {
+const OrderedBooks = () => {
   const [buyingList, setBuyingList] = useState([])
   const [tableData, setTableData] = useState([])
   const [csvData, setCsvData] = useState([])
@@ -13,6 +13,8 @@ const OrderedBooks = ({ refetcher, refetch }) => {
   const [loading, setLoading] = useState(false)
   const [activeFilter, setActiveFilter] = useState('title')
   const [totalCost, setTotalCost] = useState(0)
+  const [buyingOrders, setBuyingOrders] = useState([])
+  const [fetch, setFetch] = useState(true)
 
   useEffect(() => {
     setLoading(true)
@@ -21,15 +23,19 @@ const OrderedBooks = ({ refetcher, refetch }) => {
         setTotalCost(data.totalCost)
         setBuyingList(data.buyingList)
         setTableData(data.buyingList)
-        console.log(data)
+        setBuyingOrders(data.buyingOrders)
       })
-      .then((err) => {
+      .catch((err) => {
         console.log(err)
       })
       .finally(() => {
         setLoading(false)
       })
-  }, [])
+  }, [fetch])
+
+  const reFetch = () => {
+    setFetch(!fetch)
+  }
 
   useEffect(() => {
     if (buyingList.length) {
@@ -57,7 +63,18 @@ const OrderedBooks = ({ refetcher, refetch }) => {
     } else {
       setTableData(buyingList)
     }
-  }, [filter, activeFilter, tableData])
+  }, [filter, activeFilter])
+
+  const confirmBuy = async (orders) => {
+    try {
+      const { data } = await API.patch('/order/updateOrders/', {
+        orders,
+      })
+      reFetch()
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   const tableColumns = [
     {
@@ -115,7 +132,6 @@ const OrderedBooks = ({ refetcher, refetch }) => {
       render: (text, record) => <b>{text}</b>,
     },
   ]
-  const { Option } = Select
 
   const tableHeader = () => (
     <div className='flex flex-wrap justify-between mx-3'>
@@ -139,7 +155,7 @@ const OrderedBooks = ({ refetcher, refetch }) => {
           </Button>
         </CSVLink>
 
-        <Button type='primary' onClick={refetcher}>
+        <Button type='primary' onClick={reFetch}>
           Refresh
         </Button>
       </span>
@@ -159,10 +175,19 @@ const OrderedBooks = ({ refetcher, refetch }) => {
         title={tableHeader}
         bordered='true'
         footer={() => (
-          <div style={{ width: '100%' }}>
+          <div
+            className='flex justify-between items-center'
+            style={{ width: '100%' }}
+          >
             <p style={{ textAlign: 'center' }}>
               Total Book Buying Cost = {totalCost} Tk.
             </p>
+            <Button
+              disabled={!buyingList.length}
+              onClick={() => confirmBuy(buyingOrders)}
+            >
+              Confirm Buy
+            </Button>
           </div>
         )}
         scroll={{ x: '500px' }}
