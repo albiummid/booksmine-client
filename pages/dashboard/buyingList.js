@@ -91,7 +91,6 @@ const OrderedBooks = () => {
       width: 200,
       sorter: (a, b) =>
         a.title.toLowerCase().localeCompare(b.title.toLowerCase()),
-      //   key:'title'
     },
 
     {
@@ -102,7 +101,6 @@ const OrderedBooks = () => {
       sorter: (a, b) =>
         a.author.toLowerCase().localeCompare(b.author.toLowerCase()),
       align: 'left',
-      //   key:'title'
     },
     {
       title: 'Price',
