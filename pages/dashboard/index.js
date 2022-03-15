@@ -24,7 +24,7 @@ function Dashboard() {
     const serverData = { isServer: true, base: serverAPI }
     const localData = { isServer: false, base: localAPI }
     try {
-      const { data } = await axios.patch(
+      const { data } = await axios.put(
         serverAPI + '/user/updateUserSettings?email=' + session.user.email,
         value === 'local' ? localData : serverData
       )

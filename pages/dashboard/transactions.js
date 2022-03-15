@@ -75,7 +75,7 @@ const Transactions = () => {
       const updatedRow = await form.validateFields()
       const index = trxData.findIndex((item) => item._id === editingKey)
       if (index >= 0) {
-        const { data } = await API.patch('/transaction/' + editingKey, {
+        const { data } = await API.put('/transaction/' + editingKey, {
           ...updatedRow,
         })
         cancelEdit()

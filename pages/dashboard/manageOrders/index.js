@@ -56,7 +56,10 @@ const ManageOrders = () => {
       const orderList = orderData.orders
       const trxList = trxData.transactions
 
-      console.log(orderList, trxList)
+      const test = orderList.filter(
+        (item) => item.user.email === 'albi.ummid@gmail.com'
+      )
+      console.log(test)
 
       //next time this will be on backend
       //on Every trxAdded to the server,It will add the trxBalance to the order Item...

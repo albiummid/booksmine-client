@@ -1,7 +1,7 @@
-import { Badge } from 'antd'
+// Import Swiper styles
+import { Splide, SplideSlide } from '@splidejs/react-splide'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-// Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/free-mode'
 import 'swiper/css/pagination'
@@ -26,20 +26,23 @@ function Home() {
         <h4>On development</h4>
 
         <div className='mx-auto py-3 flex gap-5 overflow-scroll no-scrollbar'>
-          {books.length &&
-            books.slice(0, 15).map((book) =>
-              book.discount > 0 ? (
-                <Badge.Ribbon
-                  color={'volcano'}
-                  key={book._id}
-                  text={`${book.discount}% off !`}
-                >
+          <Splide
+            options={{
+              type: 'loop',
+              autoplay: 'pause',
+              rewind: true,
+              width: '100%',
+              gap: '1rem',
+              perPage: 4,
+            }}
+          >
+            {books.length &&
+              books.slice(0, 15).map((book) => (
+                <SplideSlide key={book._id}>
                   <BookCard book={book} key={book._id} />
-                </Badge.Ribbon>
-              ) : (
-                <BookCard book={book} key={book._id} />
-              )
-            )}
+                </SplideSlide>
+              ))}
+          </Splide>
         </div>
       </div>
     </>

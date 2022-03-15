@@ -247,7 +247,7 @@ export default function CourseMng({ data }) {
         })
         .finally(() => setLoading(false))
     } else {
-      API.patch(
+      API.put(
         `/course/update?deptId=${currentDept._id}&semId=${currentSem._id}`,
         {
           ...value,

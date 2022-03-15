@@ -72,7 +72,7 @@ const EditableTable = () => {
 
       if (_id?.length) {
         console.log('updating')
-        const { data } = await API.patch('/transaction/' + _id)
+        const { data } = await API.put('/transaction/' + _id)
         setTableData(data.transactions)
         setEditingKey('')
 

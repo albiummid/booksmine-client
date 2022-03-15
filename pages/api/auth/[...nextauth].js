@@ -51,6 +51,7 @@ export default NextAuth({
           name,
           image,
         })
+        console.log(image)
         session.session.user.role = data.user.role
       } catch (err) {
         console.log(err)

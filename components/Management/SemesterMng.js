@@ -211,7 +211,7 @@ export default function SemesterMng({ data }) {
         })
         .finally(() => setLoading(false))
     } else {
-      API.patch(`/semester/update?deptId=${currentDept._id}`, {
+      API.put(`/semester/update?deptId=${currentDept._id}`, {
         ...value,
         _id: edit._id,
       })

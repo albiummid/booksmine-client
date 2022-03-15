@@ -172,7 +172,7 @@ export default function DeptMng({ data }) {
         })
         .finally(() => setLoading(false))
     } else {
-      API.patch(`${'/department/update/' + edit?._id}`, value)
+      API.put(`${'/department/update/' + edit?._id}`, value)
         .then(({ data }) => {
           console.log(data)
           toast.success(data.msg)

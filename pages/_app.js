@@ -1,3 +1,4 @@
+import '@splidejs/splide/dist/css/splide.min.css'
 import 'antd/dist/antd.css'
 import { SessionProvider, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'

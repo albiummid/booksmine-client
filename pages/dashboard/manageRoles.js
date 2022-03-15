@@ -165,7 +165,7 @@ export default function ManageRole() {
 
   const handleRole = (_id, value) => {
     setLoading(true)
-    API.patch('/user/update?_id=' + _id, { role: value })
+    API.put('/user/update?_id=' + _id, { role: value })
       .then(({ data }) => {
         setTableData(data.users)
       })

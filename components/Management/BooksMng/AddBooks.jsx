@@ -31,21 +31,6 @@ export const FormGroup = styled.div`
   flex-wrap: wrap;
 `
 
-export const categoryList = [
-  {
-    title: 'Self Development and Learning',
-  },
-  {
-    title: 'Islamic',
-  },
-  {
-    title: 'Literature',
-  },
-  {
-    title: 'Childrens book',
-  },
-]
-
 const AddBooks = ({ refetcher, editId, form, isAcademic }) => {
   const [loading, setLoading] = useState(false)
   const [image, setImage] = useState(null)
@@ -105,7 +90,7 @@ const AddBooks = ({ refetcher, editId, form, isAcademic }) => {
     }
     if (editId) {
       setLoading(true)
-      API.patch(`/book/${editId}`, formData)
+      API.put(`/book/${editId}`, formData)
         .then((res) => {
           toast.success('Successfully Updated')
           refetcher(true)

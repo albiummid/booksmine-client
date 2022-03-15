@@ -67,7 +67,7 @@ const OrderedBooks = () => {
 
   const confirmBuy = async (orders) => {
     try {
-      const { data } = await API.patch('/order/updateOrders/', {
+      const { data } = await API.put('/order/updateOrders/', {
         orders,
       })
       reFetch()

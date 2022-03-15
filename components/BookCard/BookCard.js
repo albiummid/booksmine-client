@@ -4,6 +4,7 @@ import {
   ShoppingFilled,
   ShoppingOutlined,
 } from '@ant-design/icons/lib/icons'
+import { Badge } from 'antd'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -69,18 +70,37 @@ export default function BookCard({ book }) {
   if (isFavorite === null || isCarted === null) null
   return (
     <div
-      className='book__container rounded-xl shadow-md shadow-gray-500 w-[120px] md:w-[180px] '
+      className='book__container rounded-xl shadow-md shadow-gray-500 w-[120px] md:w-[180px] mx-auto '
       key={_id}
     >
-      <div className='image__container'>
-        <Image
-          className='rounded-t-xl '
-          src={imgUrl}
-          width={180}
-          height={220}
-          alt={title}
-        />
-      </div>
+      {discount > 0 ? (
+        <Badge.Ribbon
+          color={'volcano'}
+          key={book._id}
+          text={`${book.discount}% off !`}
+        >
+          <div className='image__container'>
+            <Image
+              className='rounded-t-xl '
+              src={imgUrl}
+              width={180}
+              height={220}
+              alt={title}
+            />
+          </div>
+        </Badge.Ribbon>
+      ) : (
+        <div className='image__container'>
+          <Image
+            className='rounded-t-xl '
+            src={imgUrl}
+            width={180}
+            height={220}
+            alt={title}
+          />
+        </div>
+      )}
+
       <div className='info__container mx-2'>
         <p className='text-[.65rem] md:text-xs font-medium truncate ...'>
           {title}
